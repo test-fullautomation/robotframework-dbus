@@ -29,28 +29,17 @@
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api.deco import keyword
-from dasbus.connection import SessionMessageBus
-from dasbus.identifier import DBusServiceIdentifier, DBusObjectIdentifier
-from dasbus.client.proxy import disconnect_proxy
-from dasbus.client.observer import DBusObserver
-from dasbus.loop import EventLoop
 from RobotFramework_DBus.dbus_client import DBusClient
+from RobotFramework_DBus.dbus_client_remote import DBusClientRemote
+from RobotFramework_DBus.common.utils import Singleton
 import threading
-
-
-class Singleton(object):  # pylint: disable=R0903
-   """
-Class to implement Singleton Design Pattern. This class is used to derive the 
-DBusManager as only a single instance of this class is allowed.
-   """
-   _instance = None
-   _lock = threading.Lock()
-
-   def __new__(cls, *args, **kwargs):
-      with cls._lock:
-         if not cls._instance:
-            cls._instance = super(Singleton, cls).__new__(cls, *args, **kwargs)
-      return cls._instance
+import platform
+if platform.system().lower().startswith("linux"):
+   from dasbus.connection import SessionMessageBus
+   from dasbus.identifier import DBusServiceIdentifier, DBusObjectIdentifier
+   from dasbus.client.proxy import disconnect_proxy
+   from dasbus.client.observer import DBusObserver
+   from dasbus.loop import EventLoop
 
 
 class DBusManager(Singleton):   
@@ -60,6 +49,7 @@ Class to manage all DBus connections.
    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
    ROBOT_AUTO_KEYWORDS = False
 
+   ERR_CONNECTION_NAME_EXIST_STR = "The connection name '%s' has already existed! Please use other name"
    ERR_UNNABLE_CREATE_CONNECTION_STR = "Unable to create connection. Exception: %s"
    ERR_SET_SIGNAL_HANDLER_STR = "Unable to set '%s' keyword as handler for '%s' signal. Exception: %s"
    ERR_REGISTER_SIGNAL_STR = "Unable to register '%s' signal to monitoring list. Exception: %s"
@@ -190,9 +180,11 @@ Keyword for disconnecting a connection by name.
       if connection_name in self.connection_manage_dict.keys():
          self.connection_manage_dict[connection_name].quit()
          del self.connection_manage_dict[connection_name]
+      elif connection_name.startswith("ALL"):
+         self.connection_manage_dict.clear()
 
    @keyword
-   def connect(self, conn_name='default_conn', namespace="", object_path=None):
+   def connect(self, conn_name='default_conn', namespace="", object_path=None, mode = "local", host="localhost", port=2507):
       """
 Keyword used to establish a DBus connection.
       
@@ -227,14 +219,17 @@ Keyword used to establish a DBus connection.
 (*no returns*)
       """
       if conn_name in self.connection_manage_dict.keys():
-         raise AssertionError(constants.String.CONNECTION_NAME_EXIST % conn_name)
+         raise AssertionError(DBusManager.ERR_CONNECTION_NAME_EXIST_STR % conn_name)
 
       if conn_name == 'default_conn':
          conn_name += str(DBusManager.idx)
          DBusManager.idx += 1
 
       try:
-         connection_obj = DBusClient(namespace, object_path)
+         if mode == 'local':
+            connection_obj = DBusClient(namespace, object_path)
+         elif mode == 'remote':
+            connection_obj = DBusClientRemote(namespace, object_path, host, int(port))
       except Exception as ex:
          # BuiltIn().log("Unable to create connection. Exception: %s" % ex, constants.LOG_LEVEL_ERROR)
          raise AssertionError("Unable to create connection. Exception: %s" % ex)
@@ -363,7 +358,7 @@ Keyword used to call a DBus method with the specified method name and input argu
       ret_obj = None
       connection_obj = self.connection_manage_dict[conn_name]
       try:
-         ret_obj = connection_obj.call_dbus_method(method_name, args)
+         ret_obj = connection_obj.call_dbus_method(method_name, *args)
       except Exception as ex:
          raise Exception(DBusManager.ERR_CALL_DBUS_METHOD_STR % (method_name, ex))
 
