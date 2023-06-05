@@ -26,82 +26,28 @@
 # - Initialize
 #
 # *******************************************************************************
-from dasbus.connection import SessionMessageBus
-from dasbus.identifier import DBusServiceIdentifier, DBusObjectIdentifier
-from dasbus.client.proxy import disconnect_proxy
-from dasbus.loop import EventLoop
+
 from threading import Timer
-from RobotFramework_DBus.thread_safe_dict import ThreadSafeDict
-from dasbus.connection import SessionMessageBus
+from RobotFramework_DBus.common.thread_safe_dict import ThreadSafeDict
+from RobotFramework_DBus.common.register_keyword import RegisterKeyword
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.running import Keyword
+import platform
+if platform.system().lower().startswith("linux"):
+   from dasbus.connection import SessionMessageBus
+   from dasbus.identifier import DBusServiceIdentifier, DBusObjectIdentifier
+   from dasbus.client.proxy import disconnect_proxy
+   from dasbus.loop import EventLoop
 
-
-# Define the message bus.
-SESSION_BUS = SessionMessageBus()
-
-
-class RegisterKeyword:
-   """
-A class that provides a keyword as a callback function for a DBus signal received.
-   """
-   def __init__(self, kw):
-      """
-Constructor for RegisterKeyword class.
-
-**Arguments:**   
-
-* ``kw``    
-
-  / *Condition*: required / *Type*: str /
-  
-  Keyword name to be set as the callback function.
-
-**Returns:**
-
-(*no returns*)
-      """
-      self._kw = kw
-
-   def callback_func(self, *observer):
-      """
-Constructor for RegisterKeyword class.
-
-**Arguments:**   
-
-* ``observer``    
-
-  / *Condition*: optional / *Type*: tuple / *Default*: None /
-  
-  Input arguments to be passed to the callback method.
-
-**Returns:**
-
-(*no returns*)
-      """
-      kw_args = None
-      input_kw_args = observer
-      try:
-         all_lib = BuiltIn().get_library_instance(all=True)
-         user_keywords = all_lib['BuiltIn']._context.namespace._kw_store.user_keywords
-         kw_args = user_keywords.handlers[self._kw.lower()].arguments.argument_names
-      except Exception as _ex:
-         pass
-
-      if kw_args is not None:
-         input_kw_args = observer[0:len(kw_args)]
-
-      BuiltIn().run_keyword(self._kw, *input_kw_args)
-
+   # Define the message bus.
+   SESSION_BUS = SessionMessageBus()
 
 
 class DBusClient:
    """
 A client class for interacting with a specific DBus service.
    """
-   _watch_dict = ThreadSafeDict()
-
    def __init__(self, namespace, object_path):
       """
 Constructor for DBusClient class.
@@ -134,6 +80,7 @@ Constructor for DBusClient class.
       self.proxy = None
       self.namespace = namespace
       self.object_path = object_path
+      self._captured_signal_dict = ThreadSafeDict()
       try:
          self.dbus = DBusServiceIdentifier(
                             namespace=namespace_tuple,
@@ -200,8 +147,35 @@ Set a signal received handler for a specific signal.
       sgn = getattr(self.proxy, signal)
       sgn.connect(rkw.callback_func)
 
-   def add_signal_to_watch_dict(self,  signal, loop=None, payloads=""):
-      self._watch_dict[signal] = payloads
+   def add_signal_to_captured_dict(self,  signal, loop=None, payloads=""):
+      """
+Add a signal and its payloads to the captured dictionary when the signal be emited.
+      
+**Arguments:**
+
+* ``signal``    
+
+  / *Condition*: required / *Type*: str /
+  
+  The name of the DBus signal(s) which has been raised.
+
+* ``loop``    
+
+  / *Condition*: optional / *Type*: EventLoop / *Default*: None /
+  
+  The Event loop which is running to wait for the raised signal.
+
+* ``payloads``    
+
+  / *Condition*: optional / *Type*: Any / *Default*: "" /
+  
+  The payloads of the raised signal.
+
+**Returns:**
+
+(*no returns*)      
+      """
+      self._captured_signal_dict[signal] = payloads
       if loop is not None:
          try:
             loop.quit()
@@ -229,14 +203,41 @@ Register a DBus signal or signals to be monitored for a specific connection.
          sgn_list = signal.split(",")
          for s in sgn_list:
             sgn = getattr(self.proxy, s)
-            sgn.connect(lambda x: self.add_signal_to_watch_dict(s, None, x))
+            sgn.connect(lambda x: self.add_signal_to_captured_dict(s, None, x))
       elif isinstance(signal, list):
          for s in signal:
             sgn = getattr(self.proxy, s)
-            sgn.connect(lambda x: self.add_signal_to_watch_dict(s, None, x))   
+            sgn.connect(lambda x: self.add_signal_to_captured_dict(s, None, x))   
 
-   def notify_on_signal(self):
-      pass
+   def _run_event_loop_with_timeout(self, loop, timeout):
+      """
+Run the Event Loop with timeout.
+      
+**Arguments:**
+
+* ``loop``    
+
+  / *Condition*: required / *Type*: EventLoop /
+  
+  The Event loop to be run.
+
+* ``timeout``    
+
+  / *Condition*: required / *Type*: int /
+  
+  The timeout for running Event loop.
+
+**Returns:**
+
+(*no returns*)
+      """
+      try:
+         t = Timer(timeout, loop.quit)
+         t.start()
+      except Exception as _ex:
+         pass
+
+      loop.run()
 
    def wait_for_signal(self, wait_signal="", timeout=0):
       """
@@ -271,21 +272,15 @@ Wait for a specific DBus signal to be received within a specified timeout period
       except Exception as _ex:
          raise Exception("DBus service '%s' not have the signal '%s'" % (self.namespace, wait_signal))
 
-      callback_func = lambda x: self.add_signal_to_watch_dict(wait_signal, loop, x)
+      callback_func = lambda x: self.add_signal_to_captured_dict(wait_signal, loop, x)
       sgn.connect(callback_func)
-      if wait_signal in self._watch_dict:
+      if wait_signal in self._captured_signal_dict:
          sgn.disconnect(callback_func)
-         return self._watch_dict[wait_signal]
+         return self._captured_signal_dict[wait_signal]
       
-      try:
-         t = Timer(timeout, loop.quit)
-         t.start()
-      except Exception as _ex:
-         pass
-
-      loop.run()
-      if wait_signal in self._watch_dict:
-         return self._watch_dict[wait_signal]
+      self._run_event_loop_with_timeout(loop, timeout)
+      if wait_signal in self._captured_signal_dict:
+         return self._captured_signal_dict[wait_signal]
       else:
          raise AssertionError("Unable to receive the '%s' signal after '%s'" % (wait_signal, timeout))
 
