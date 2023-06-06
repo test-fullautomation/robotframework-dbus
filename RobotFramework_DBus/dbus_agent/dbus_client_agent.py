@@ -538,11 +538,9 @@ Call a DBus method with the specified method name and input arguments.
 
 **Returns:**
 
-* ``ret_obj``
-
   / *Type*: Any /
   
-  Connection object.
+  Return from called method.
       """
       return self._executor_dict[session].call_dbus_method(method_name, *args)
 
@@ -562,7 +560,9 @@ Description:
    through the assigned Executor instances.
 
    Command-line Arguments:
+
       --host (str, optional): The host where the agent is running. Default is '0.0.0.0'.
+      
       --port (int, optional): The port where the agent is listening. Default is 2507.
    """
    # Create the argument parser

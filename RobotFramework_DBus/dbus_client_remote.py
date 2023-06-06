@@ -40,7 +40,7 @@ import xmlrpc.client
 
 class DBusClientRemote:
    """
-A client class for interacting with a specific DBus service.
+A client class for interacting with a specific DBus service on a remote machine.
    """
 
    _CHECK_SIGNAL_INTERVAL = 50

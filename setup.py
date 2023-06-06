@@ -103,6 +103,14 @@ class ExtendedInstallCommand(install):
         listCmdArgs = sys.argv
         if ( ('install' in listCmdArgs) or ('build' in listCmdArgs) or ('sdist' in listCmdArgs) or ('bdist_wheel' in listCmdArgs) ):
             install.run(self)
+            if oRepositoryConfig.Get('PLATFORMSYSTEM') == "Linux":
+                from subprocess import call
+                call([  f"{os.path.dirname(oRepositoryConfig.Get('PYTHON'))}/pyinstaller" , 
+                        '--onefile',
+                        '--distpath',
+                        f"{os.path.dirname(oRepositoryConfig.Get('PYTHON'))}",
+                        f"{oRepositoryConfig.Get('INSTALLEDPACKAGEFOLDER')}/dbus_agent/dbus_client_agent.py"
+                        ])
         return SUCCESS
 
 # eof class ExtendedInstallCommand(install):
@@ -196,7 +204,9 @@ setuptools.setup(
     long_description = long_description,
     long_description_content_type = str(oRepositoryConfig.Get('LONGDESCRIPTIONCONTENTTYPE')),
     url = str(oRepositoryConfig.Get('URL')),
-    packages = [str(oRepositoryConfig.Get('PACKAGENAME')),],
+    packages = [str(oRepositoryConfig.Get('PACKAGENAME')),
+                str(oRepositoryConfig.Get('PACKAGENAME')) + ".common",
+                str(oRepositoryConfig.Get('PACKAGENAME')) + ".dbus_agent",],
     package_dir = {str(oRepositoryConfig.Get('REPOSITORYNAME')) : str(oRepositoryConfig.Get('PACKAGENAME'))},
     classifiers = [
         str(oRepositoryConfig.Get('PROGRAMMINGLANGUAGE')),
