@@ -44,6 +44,7 @@ import xmlrpc.server
 import argparse
 import secrets
 import string
+import threading
 
 
 # Define the message bus.
@@ -94,9 +95,14 @@ Constructor for DBusClientExecutor.
                             namespace=namespace_tuple,
                             message_bus=SESSION_BUS
                         )
-
+         self.main_event_loop = EventLoop()         
+         self.event_loop_thread = threading.Thread(target=self._start_event_loop, args=(self.main_event_loop,), daemon=True)
+         self.event_loop_thread.start()
       except Exception as ex:
          raise Exception("Unable to connect to '%s' DBus. Reason: '%s'" % (namespace, str(ex)) )
+
+   def _start_event_loop(self, loop):
+      loop.run()
 
    def connect(self):
       """
@@ -117,6 +123,8 @@ Disconnect the DBus proxy from the remote object.
 (*no returns*)
       """
       disconnect_proxy(self.proxy)
+      if self.event_loop_thread.is_alive():
+         self.main_event_loop.quit()
 
    def quit(self):
       """
@@ -150,7 +158,7 @@ Get the payloads of a specific signal.
       """
       payloads = None
       if signal in self._captured_signal_dict:
-         payloads = self._captured_signal_dict[signal]
+         payloads = self._captured_signal_dict.pop(signal)
       return payloads
 
    def add_signal_to_captured_dict(self, signal, loop=None, payloads=""):
