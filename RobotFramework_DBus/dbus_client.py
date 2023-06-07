@@ -34,6 +34,7 @@ from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.running import Keyword
 import platform
+import threading
 if platform.system().lower().startswith("linux"):
    from dasbus.connection import SessionMessageBus
    from dasbus.identifier import DBusServiceIdentifier, DBusObjectIdentifier
@@ -87,7 +88,9 @@ Constructor for DBusClient class.
                             namespace=namespace_tuple,
                             message_bus=SESSION_BUS
                         )
-
+         self.main_event_loop = EventLoop()         
+         self.event_loop_thread = threading.Thread(target=self._start_event_loop, args=(self.main_event_loop,), daemon=True)
+         self.event_loop_thread.start()
       except Exception as ex:
          raise Exception("Unable to connect to '%s' DBus. Reason: '%s'" % (namespace, str(ex)) )
 
@@ -110,6 +113,8 @@ Disconnect the DBus proxy from the remote object.
 (*no returns*)
       """
       disconnect_proxy(self.proxy)
+      if self.event_loop_thread.is_alive():
+         self.main_event_loop.quit()
 
    def quit(self):
       """
@@ -150,7 +155,10 @@ Set a signal received handler for a specific signal.
       if signal not in self._singal_handler_dict:
          self._singal_handler_dict[signal] = [(sgn, rkw)]
       else:
-         self._singal_handler_dict[signal].append((sgn, rkw))
+         self._singal_handler_dict[signal].append((sgn, rkw))     
+         
+   def _start_event_loop(self, loop):
+      loop.run()
 
    def unset_signal_received_handler(self, signal, handle_keyword=None):
       """
@@ -177,7 +185,7 @@ Unset a signal received handler for a specific signal.
       if signal in self._singal_handler_dict:
          for hdl in self._singal_handler_dict[signal]:
             if handle_keyword is None or hdl[1].get_kw_name() == handle_keyword:
-               hdl[0].disconnect(hdl[1].call_back_func)
+               hdl[0].disconnect(hdl[1].callback_func)
 
    def add_signal_to_captured_dict(self,  signal, loop=None, payloads=""):
       """

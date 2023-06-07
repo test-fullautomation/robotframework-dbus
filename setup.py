@@ -195,6 +195,10 @@ if ( ('install' in listCmdArgs) or ('build' in listCmdArgs) or ('sdist' in listC
 print(COLBY + "Extended setup step 5/5: install.run(self)")
 print()
 
+install_requires_packages = oRepositoryConfig.Get('INSTALLREQUIRES')
+if oRepositoryConfig.Get('PLATFORMSYSTEM') == "Linux":
+    install_requires_packages = install_requires_packages.extend(["pycairo", "PyGObject", "dasbus"])
+
 setuptools.setup(
     name         = str(oRepositoryConfig.Get('REPOSITORYNAME')),
     version      = str(oRepositoryConfig.Get('PACKAGEVERSION')),
@@ -220,7 +224,7 @@ setuptools.setup(
     cmdclass={
         'install': ExtendedInstallCommand,
     },
-    install_requires = oRepositoryConfig.Get('INSTALLREQUIRES'),
+    install_requires = install_requires_packages,
     package_data={f"{oRepositoryConfig.Get('PACKAGENAME')}" : oRepositoryConfig.Get('PACKAGEDATA')},
 )
 

@@ -53,6 +53,18 @@ Constructor for RegisterKeyword class.
       """
       self._kw = kw
 
+   def get_kw_name(self):
+      """
+Get the handle keyword name.
+
+**Returns:**
+
+  / *Type*: str /
+  
+  The handle keyword name.
+      """
+      return self._kw
+
    def callback_func(self, *observer):
       """
 Constructor for RegisterKeyword class.

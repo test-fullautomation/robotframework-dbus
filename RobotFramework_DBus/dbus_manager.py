@@ -428,48 +428,48 @@ Keyword used to call a DBus method with the specified method name and input argu
 
       return ret_obj
 
-   @keyword
-   def call_dbus_method_with_keyword_args(self, conn_name="default_conn", method_name="", **kwargs):
-      """
-Keyword used to call a DBus method with the specified method name and input keyword arguments.
+#    @keyword
+#    def call_dbus_method_with_keyword_args(self, conn_name="default_conn", method_name="", **kwargs):
+#       """
+# Keyword used to call a DBus method with the specified method name and input keyword arguments.
       
-**Arguments:**   
+# **Arguments:**   
 
-* ``conn_name``    
+# * ``conn_name``    
 
-  / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
+#   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
   
-  The name of the DBus connection.
+#   The name of the DBus connection.
 
-* ``method_name``    
+# * ``method_name``    
 
-  / *Condition*: optional / *Type*: str / *Default*: '' /
+#   / *Condition*: optional / *Type*: str / *Default*: '' /
   
-  The name of the DBus method to be called.
+#   The name of the DBus method to be called.
 
-* ``kwargs``    
+# * ``kwargs``    
 
-  / *Condition*: optional / *Type*: dict / *Default*: None /
+#   / *Condition*: optional / *Type*: dict / *Default*: None /
   
-  Input keyword arguments to be passed to the method.
+#   Input keyword arguments to be passed to the method.
 
-**Returns:**
+# **Returns:**
 
-  / *Type*: Any /
+#   / *Type*: Any /
   
-  Return from called method.
-      """
-      if conn_name not in self.connection_manage_dict.keys():
-         raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
+#   Return from called method.
+#       """
+#       if conn_name not in self.connection_manage_dict.keys():
+#          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
       
-      ret_obj = None
-      connection_obj = self.connection_manage_dict[conn_name]
-      try:
-         ret_obj = connection_obj.call_dbus_method_with_keyword_args(method_name, **kwargs)
-      except Exception as ex:
-         raise Exception(DBusManager.ERR_CALL_DBUS_METHOD_STR % (method_name, ex))
+#       ret_obj = None
+#       connection_obj = self.connection_manage_dict[conn_name]
+#       try:
+#          ret_obj = connection_obj.call_dbus_method_with_keyword_args(method_name, **kwargs)
+#       except Exception as ex:
+#          raise Exception(DBusManager.ERR_CALL_DBUS_METHOD_STR % (method_name, ex))
 
-      return ret_obj
+#       return ret_obj
 
    @keyword
    def wait_for_signal(self, conn_name="default_conn", signal="", timeout=0):

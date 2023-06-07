@@ -88,9 +88,11 @@ Constructor for DBusClientRemote class.
       namespace_tuple = tuple(namespace.split('.'))
       self.rpc_proxy = xmlrpc.client.ServerProxy("http://%s:%s" % (host, port), allow_none=True)
       self.session = self.rpc_proxy.get_session_token()
-      self.singal_handler_dict = dict()
+      self._singal_handler_dict = ThreadSafeDict()
       self.namespace = namespace
       self.object_path = object_path
+      self.host = host
+      self.port = port
       try:
          self.rpc_proxy.initialize_dbus_client(self.session, self.namespace, self.object_path)
       except Exception as ex:
@@ -125,9 +127,11 @@ Quit the DBus client.
 (*no returns*)
       """
       self.disconnect()
-      for job in self.singal_handler_dict.values():
-         job.stop()
-      self.singal_handler_dict.clear()
+      for job_list in self._singal_handler_dict.values():
+         for schdl_job in job_list:
+            if not schdl_job[0].stopped.is_set():
+               schdl_job[0].stop()
+      self._singal_handler_dict.clear()
 
    def do_signal_check(self, signal, call_back_func):
       """
@@ -185,9 +189,13 @@ Set a signal received handler for a specific signal.
                               *(signal, rkw.callback_func))
       self.rpc_proxy.register_monitored_signal(self.session, signal)
       signal_check_job.start()
-      self.singal_handler_dict[signal] = signal_check_job
+      # self.singal_handler_dict[signal] = signal_check_job
+      if signal not in self._singal_handler_dict:
+         self._singal_handler_dict[signal] = [(signal_check_job, rkw)]
+      else:
+         self._singal_handler_dict[signal].append((signal_check_job, rkw))
 
-   def unset_signal_received_handler(self, signal):
+   def unset_signal_received_handler(self, signal, handle_keyword=None):
       """
 Unset a signal received handler for a specific signal.
       
@@ -203,10 +211,15 @@ Unset a signal received handler for a specific signal.
 
 (*no returns*)
       """
-      if signal in self.singal_handler_dict:
-         job_check = self.singal_handler_dict[signal]
-         job_check.stop()
-         del self.singal_handler_dict[signal]
+      if signal in self._singal_handler_dict:
+        #  job_check = self.singal_handler_dict[signal]
+        #  job_check.stop()
+        #  del self.singal_handler_dict[signal]
+        for hdl in self._singal_handler_dict[signal]:
+            if handle_keyword is None or hdl[1].get_kw_name() == handle_keyword:
+              #  hdl[0].disconnect(hdl[1].callback_func)
+              hdl[0].stop()
+
 
    def register_monitored_signal(self, signal):
       """
