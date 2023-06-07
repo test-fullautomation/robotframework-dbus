@@ -52,6 +52,7 @@ Class to manage all DBus connections.
    ERR_CONNECTION_NAME_EXIST_STR = "The connection name '%s' has already existed! Please use other name"
    ERR_UNNABLE_CREATE_CONNECTION_STR = "Unable to create connection. Exception: %s"
    ERR_SET_SIGNAL_HANDLER_STR = "Unable to set '%s' keyword as handler for '%s' signal. Exception: %s"
+   ERR_UNSET_SIGNAL_HANDLER_STR = "Unable to unset '%s' keyword as handler for '%s' signal. Exception: %s"
    ERR_REGISTER_SIGNAL_STR = "Unable to register '%s' signal to monitoring list. Exception: %s"
    ERR_CALL_DBUS_METHOD_STR = "Problem occurs when calling '%s' method.  Exception: %s"
    ERR_WAIT_DBUS_SIGNAL_STR = "Problem occurs when waiting for '%s' signal.  Exception: %s"
@@ -194,7 +195,9 @@ Keyword used to establish a DBus connection.
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
   
-  Name of connection.
+  The name or identifier of the connection instance used to interact with the DBus service.
+  This parameter is optional and can be used to uniquely identify a specific connection
+  when multiple connections are established. If not provided, a default connection will be used.
 
 * ``namespace``    
 
@@ -213,6 +216,29 @@ Keyword used to establish a DBus connection.
   This identifies the specific object within the service that the action will be performed on.
   The object path should be a string that follows the DBus object path naming convention.
   It typically consists of a hierarchical structure separated by slashes (/).
+  
+* ``mode``    
+
+  / *Condition*: optional / *Type*: str / *Default*: 'local' /
+  
+  The mode of testing the DBus service. Possible values are 'local' or 'remote'.
+  'local' indicates testing on the current system, while 'remote' indicates testing on a remote system.
+  
+* ``host``    
+
+  / *Condition*: optional / *Type*: str / *Default*: 'localhost' /
+  
+  The IP address or hostname of the remote system where the DBus agent is running.
+  
+  This parameter is applicable only if `mode` is set to 'remote'.
+  
+* ``port``    
+
+  / *Condition*: optional / *Type*: int / *Default*: 2507 /
+  
+  The port number on which the DBus agent is listening on the remote system.
+  
+  This parameter is applicable only if `mode` is set to 'remote'.
 
 **Returns:**
 
@@ -285,6 +311,44 @@ Keyword used to set a signal received handler for a specific DBus connection and
          connection_obj.set_signal_received_handler(signal, handler)
       except Exception as ex:
          raise Exception(DBusManager.ERR_SET_SIGNAL_HANDLER_STR % (handler, signal, ex))
+         
+   @keyword
+   def unset_signal_received_handler(self, conn_name="", signal="", handler=None):
+      """
+Keyword used to set a signal received handler for a specific DBus connection and signal.
+      
+**Arguments:**   
+
+* ``conn_name``    
+
+  / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
+  
+  The name of the DBus connection.
+
+* ``signal``    
+
+  / *Condition*: optional / *Type*: str / *Default*: '' /
+  
+  The name of the DBus signal to handle.
+
+* ``handler``    
+
+  / *Condition*: optional / *Type*: str / *Default*: None /
+  
+  The robotframework keyword which is handling the signal emitted event.
+
+**Returns:**
+
+(*no returns*)
+      """
+      if conn_name not in self.connection_manage_dict.keys():
+         raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
+      
+      connection_obj = self.connection_manage_dict[conn_name]
+      try:
+         connection_obj.unset_signal_received_handler(signal, handler)
+      except Exception as ex:
+         raise Exception(DBusManager.ERR_UNSET_SIGNAL_HANDLER_STR % (handler, signal, ex))
    
    @keyword
    def register_signal(self, conn_name="default_conn", signal=""):
@@ -350,7 +414,7 @@ Keyword used to call a DBus method with the specified method name and input argu
 
   / *Type*: Any /
   
-  Connection object.
+  Return from called method.
       """
       if conn_name not in self.connection_manage_dict.keys():
          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
@@ -363,6 +427,49 @@ Keyword used to call a DBus method with the specified method name and input argu
          raise Exception(DBusManager.ERR_CALL_DBUS_METHOD_STR % (method_name, ex))
 
       return ret_obj
+
+#    @keyword
+#    def call_dbus_method_with_keyword_args(self, conn_name="default_conn", method_name="", **kwargs):
+#       """
+# Keyword used to call a DBus method with the specified method name and input keyword arguments.
+      
+# **Arguments:**   
+
+# * ``conn_name``    
+
+#   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
+  
+#   The name of the DBus connection.
+
+# * ``method_name``    
+
+#   / *Condition*: optional / *Type*: str / *Default*: '' /
+  
+#   The name of the DBus method to be called.
+
+# * ``kwargs``    
+
+#   / *Condition*: optional / *Type*: dict / *Default*: None /
+  
+#   Input keyword arguments to be passed to the method.
+
+# **Returns:**
+
+#   / *Type*: Any /
+  
+#   Return from called method.
+#       """
+#       if conn_name not in self.connection_manage_dict.keys():
+#          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
+      
+#       ret_obj = None
+#       connection_obj = self.connection_manage_dict[conn_name]
+#       try:
+#          ret_obj = connection_obj.call_dbus_method_with_keyword_args(method_name, **kwargs)
+#       except Exception as ex:
+#          raise Exception(DBusManager.ERR_CALL_DBUS_METHOD_STR % (method_name, ex))
+
+#       return ret_obj
 
    @keyword
    def wait_for_signal(self, conn_name="default_conn", signal="", timeout=0):

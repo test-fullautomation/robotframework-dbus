@@ -95,4 +95,7 @@ Start the job execution loop.
 (*no returns*)
       """
       while not self.stopped.wait(self.interval.total_seconds()):
-         self.execute(*self.args, **self.kwargs)
+         try:
+            self.execute(*self.args, **self.kwargs)
+         except Exception as _ex:
+            pass

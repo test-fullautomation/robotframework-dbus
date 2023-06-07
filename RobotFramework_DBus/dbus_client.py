@@ -34,6 +34,7 @@ from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.running import Keyword
 import platform
+import threading
 if platform.system().lower().startswith("linux"):
    from dasbus.connection import SessionMessageBus
    from dasbus.identifier import DBusServiceIdentifier, DBusObjectIdentifier
@@ -81,12 +82,15 @@ Constructor for DBusClient class.
       self.namespace = namespace
       self.object_path = object_path
       self._captured_signal_dict = ThreadSafeDict()
+      self._singal_handler_dict = ThreadSafeDict()
       try:
          self.dbus = DBusServiceIdentifier(
                             namespace=namespace_tuple,
                             message_bus=SESSION_BUS
                         )
-
+         self.main_event_loop = EventLoop()         
+         self.event_loop_thread = threading.Thread(target=self._start_event_loop, args=(self.main_event_loop,), daemon=True)
+         self.event_loop_thread.start()
       except Exception as ex:
          raise Exception("Unable to connect to '%s' DBus. Reason: '%s'" % (namespace, str(ex)) )
 
@@ -109,6 +113,8 @@ Disconnect the DBus proxy from the remote object.
 (*no returns*)
       """
       disconnect_proxy(self.proxy)
+      if self.event_loop_thread.is_alive():
+         self.main_event_loop.quit()
 
    def quit(self):
       """
@@ -146,6 +152,40 @@ Set a signal received handler for a specific signal.
       rkw = RegisterKeyword(handler)
       sgn = getattr(self.proxy, signal)
       sgn.connect(rkw.callback_func)
+      if signal not in self._singal_handler_dict:
+         self._singal_handler_dict[signal] = [(sgn, rkw)]
+      else:
+         self._singal_handler_dict[signal].append((sgn, rkw))     
+         
+   def _start_event_loop(self, loop):
+      loop.run()
+
+   def unset_signal_received_handler(self, signal, handle_keyword=None):
+      """
+Unset a signal received handler for a specific signal.
+      
+**Arguments:**   
+
+* ``signal``    
+
+  / *Condition*: required / *Type*: str /
+  
+  The name of the DBus signal to handle.
+
+* ``handle_keyword``    
+
+  / *Condition*: optional / *Type*: str / *Type*: None / 
+  
+  The keyword which is handling for signal emitted event.
+
+**Returns:**
+
+(*no returns*)
+      """
+      if signal in self._singal_handler_dict:
+         for hdl in self._singal_handler_dict[signal]:
+            if handle_keyword is None or hdl[1].get_kw_name() == handle_keyword:
+               hdl[0].disconnect(hdl[1].callback_func)
 
    def add_signal_to_captured_dict(self,  signal, loop=None, payloads=""):
       """
@@ -304,6 +344,36 @@ Call a DBus method with the specified method name and input arguments.
 
 **Returns:**
 
+  / *Type*: Any /
+  
+  Return from called method.
+      """
+      try:
+         method = getattr(self.proxy, method_name)
+         return method(*args)
+      except Exception as ex:
+         raise ex
+
+   def call_dbus_method_with_keyword_args(self, method_name, **kwargs):
+      """
+Call a DBus method with the specified method name and input arguments.
+      
+**Arguments:**   
+
+* ``method_name``    
+
+  / *Condition*: optional / *Type*: str / *Default*: '' /
+  
+  The name of the DBus method to be called.
+
+* ``args``    
+
+  / *Condition*: optional / *Type*: tuple / *Default*: None /
+  
+  Input arguments to be passed to the method.
+
+**Returns:**
+
 * ``ret_obj``
 
   / *Type*: Any /
@@ -312,6 +382,6 @@ Call a DBus method with the specified method name and input arguments.
       """
       try:
          method = getattr(self.proxy, method_name)
-         return method(*args)
+         return method(**kwargs)
       except Exception as ex:
          raise ex
