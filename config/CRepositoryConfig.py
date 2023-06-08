@@ -39,8 +39,9 @@ import pypandoc
 
 from PythonExtensionsCollection.String.CString import CString
 
-from RobotFramework_DBus.version import VERSION
-from RobotFramework_DBus.version import VERSION_DATE
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), "RobotFramework_DBus"))
+from version import VERSION
+from version import VERSION_DATE
 
 col.init(autoreset=True)
 COLBR = col.Style.BRIGHT + col.Fore.RED
