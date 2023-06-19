@@ -1,4 +1,4 @@
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -48,37 +48,37 @@ A client class for interacting with a specific DBus service on a remote machine.
    def __init__(self, namespace, object_path, host, port):
       """
 Constructor for DBusClientRemote class.
-      
-**Arguments:**   
 
-* ``namespace``    
+**Arguments:**
+
+* ``namespace``
 
   / *Condition*: required / *Type*: str /
-  
+
   The namespace of the DBus service.
   This identifies the specific service or group of services.
   It is used to differentiate between different service instances.
   The namespace should be a string that uniquely identifies the service.
 
-* ``object_path``    
+* ``object_path``
 
   / *Condition*: required / *Type*: str /
-  
+
   The object path of the DBus service.
   This identifies the specific object within the service that the action will be performed on.
   The object path should be a string that follows the DBus object path naming convention.
   It typically consists of a hierarchical structure separated by slashes (/).
 
-* ``host``    
+* ``host``
 
   / *Condition*: required / *Type*: str /
-  
+
   The address of the host which DBus SUT is running on.
 
-* ``port``    
+* ``port``
 
   / *Condition*: required / *Type*: int /
-  
+
   The port which the DBus Agent is listening on the remote system.
 
 **Returns:**
@@ -137,18 +137,18 @@ Quit the DBus client.
       """
 Checking if the signal was emited.
 
-**Arguments:**   
+**Arguments:**
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: required / *Type*: str /
-  
+
   The name of the DBus signal to check.
 
-* ``call_back_func``    
+* ``call_back_func``
 
   / *Condition*: required / *Type*: callable /
-  
+
   The function to be callback when receiving the signal.
 
 **Returns:**
@@ -163,29 +163,29 @@ Checking if the signal was emited.
    def set_signal_received_handler(self, signal, handler):
       """
 Set a signal received handler for a specific signal.
-      
-**Arguments:**   
 
-* ``signal``    
+**Arguments:**
+
+* ``signal``
 
   / *Condition*: required / *Type*: str /
-  
+
   The name of the DBus signal to handle.
 
-* ``handler``    
+* ``handler``
 
   / *Condition*: required / *Type*: str /
-  
+
   The keyword to handle the received signal.
   The handler should accept the necessary parameters based on the signal being handled.
 
 **Returns:**
 
 (*no returns*)
-      """      
+      """
       rkw = RegisterKeyword(handler)
-      signal_check_job = ScheduledJob( timedelta(milliseconds=DBusClientRemote._CHECK_SIGNAL_INTERVAL), 
-                              self.do_signal_check, 
+      signal_check_job = ScheduledJob( timedelta(milliseconds=DBusClientRemote._CHECK_SIGNAL_INTERVAL),
+                              self.do_signal_check,
                               *(signal, rkw.callback_func))
       self.rpc_proxy.register_monitored_signal(self.session, signal)
       signal_check_job.start()
@@ -198,13 +198,13 @@ Set a signal received handler for a specific signal.
    def unset_signal_received_handler(self, signal, handle_keyword=None):
       """
 Unset a signal received handler for a specific signal.
-      
-**Arguments:**   
 
-* ``signal``    
+**Arguments:**
+
+* ``signal``
 
   / *Condition*: required / *Type*: str /
-  
+
   The name of the DBus signal to handle.
 
 **Returns:**
@@ -224,13 +224,13 @@ Unset a signal received handler for a specific signal.
    def register_monitored_signal(self, signal):
       """
 Register a DBus signal or signals to be monitored for a specific connection.
-      
+
 **Arguments:**
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal(s) to register. It can be a single signal name as a string,
   or multiple signal names joined by ','. For example: "signal1,signal2,signal3".
 
@@ -238,24 +238,24 @@ Register a DBus signal or signals to be monitored for a specific connection.
 
 (*no returns*)
       """
-      self.rpc_proxy.register_monitored_signal(self.session, signal) 
+      self.rpc_proxy.register_monitored_signal(self.session, signal)
 
    def wait_for_signal(self, wait_signal="", timeout=0):
       """
 Wait for a specific DBus signal to be received within a specified timeout period.
-      
+
 **Arguments:**
 
-* ``wait_signal``    
+* ``wait_signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal to wait for.
 
-* ``timeout``    
+* ``timeout``
 
   / *Condition*: optional / *Type*: int / *Default*: 0 /
-  
+
   The maximum time (in seconds) to wait for the signal.
 
 **Returns:**
@@ -263,7 +263,7 @@ Wait for a specific DBus signal to be received within a specified timeout period
 * ``payloads``
 
   / *Type*: str /
-  
+
   The signal payloads.
       """
       return self.rpc_proxy.wait_for_signal(self.session, wait_signal, timeout)
@@ -271,19 +271,19 @@ Wait for a specific DBus signal to be received within a specified timeout period
    def call_dbus_method(self, method_name, *args):
       """
 Call a DBus method with the specified method name and input arguments.
-      
-**Arguments:**   
 
-* ``method_name``    
+**Arguments:**
+
+* ``method_name``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus method to be called.
 
-* ``args``    
+* ``args``
 
   / *Condition*: optional / *Type*: tuple / *Default*: None /
-  
+
   Input arguments to be passed to the method.
 
 **Returns:**
@@ -291,7 +291,7 @@ Call a DBus method with the specified method name and input arguments.
 * ``ret_obj``
 
   / *Type*: Any /
-  
+
   Connection object.
       """
       return self.rpc_proxy.call_dbus_method(self.session, method_name, *args)

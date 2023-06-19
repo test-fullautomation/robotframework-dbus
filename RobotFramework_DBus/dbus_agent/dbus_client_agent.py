@@ -1,4 +1,4 @@
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -61,22 +61,22 @@ It receives requests from the DBusAgent and executes them on the corresponding D
    def __init__(self, namespace, object_path):
       """
 Constructor for DBusClientExecutor.
-      
-**Arguments:**   
 
-* ``namespace``    
+**Arguments:**
+
+* ``namespace``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The namespace of the DBus service.
   This identifies the specific service or group of services.
   It is used to differentiate between different service instances.
   The namespace should be a string that uniquely identifies the service.
 
-* ``object_path``    
+* ``object_path``
 
   / *Condition*: optional / *Type*: str / *Default*: None /
-  
+
   The object path of the DBus service.
   This identifies the specific object within the service that the action will be performed on.
   The object path should be a string that follows the DBus object path naming convention.
@@ -85,7 +85,7 @@ Constructor for DBusClientExecutor.
 **Returns:**
 
 (*no returns*)
-      """      
+      """
       namespace_tuple = tuple(namespace.split('.'))
       self.proxy = None
       self.namespace = namespace
@@ -95,7 +95,7 @@ Constructor for DBusClientExecutor.
                             namespace=namespace_tuple,
                             message_bus=SESSION_BUS
                         )
-         self.main_event_loop = EventLoop()         
+         self.main_event_loop = EventLoop()
          self.event_loop_thread = threading.Thread(target=self._start_event_loop, args=(self.main_event_loop,), daemon=True)
          self.event_loop_thread.start()
       except Exception as ex:
@@ -139,13 +139,13 @@ Quit the DBus client.
    def get_monitoring_signal_payloads(self, signal):
       """
 Get the payloads of a specific signal.
-      
-**Arguments:**   
 
-* ``signal``    
+**Arguments:**
+
+* ``signal``
 
   / *Condition*: required / *Type*: str /
-  
+
   The name of the DBus signal to get payloads.
 
 **Returns:**
@@ -153,7 +153,7 @@ Get the payloads of a specific signal.
 * ``payloads``
 
   / *Type*: str /
-  
+
   The signal's payloads.
       """
       payloads = None
@@ -164,30 +164,30 @@ Get the payloads of a specific signal.
    def add_signal_to_captured_dict(self, signal, loop=None, payloads=""):
       """
 Add a signal and its payloads to the captured dictionary when the signal be emited.
-      
+
 **Arguments:**
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: required / *Type*: str /
-  
+
   The name of the DBus signal(s) which has been raised.
 
-* ``loop``    
+* ``loop``
 
   / *Condition*: optional / *Type*: EventLoop / *Default*: None /
-  
+
   The Event loop which is running to wait for the raised signal.
 
-* ``payloads``    
+* ``payloads``
 
   / *Condition*: optional / *Type*: Any / *Default*: "" /
-  
+
   The payloads of the raised signal.
 
 **Returns:**
 
-(*no returns*)      
+(*no returns*)
       """
       self._captured_signal_dict[signal] = payloads
       if loop is not None:
@@ -199,13 +199,13 @@ Add a signal and its payloads to the captured dictionary when the signal be emit
    def register_monitored_signal(self, signal):
       """
 Register a DBus signal or signals to be monitored for a specific connection.
-      
+
 **Arguments:**
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal(s) to register. It can be a single signal name as a string,
   or multiple signal names joined by ','. For example: "signal1,signal2,signal3".
 
@@ -221,24 +221,24 @@ Register a DBus signal or signals to be monitored for a specific connection.
       elif isinstance(signal, list):
          for s in signal:
             sgn = getattr(self.proxy, s)
-            sgn.connect(lambda x: self.add_signal_to_captured_dict(s, None, x))  
+            sgn.connect(lambda x: self.add_signal_to_captured_dict(s, None, x))
 
    def _run_event_loop_with_timeout(self, loop, timeout):
       """
 Run the Event Loop with timeout.
-      
+
 **Arguments:**
 
-* ``loop``    
+* ``loop``
 
   / *Condition*: required / *Type*: EventLoop /
-  
+
   The Event loop to be run.
 
-* ``timeout``    
+* ``timeout``
 
   / *Condition*: required / *Type*: int /
-  
+
   The timeout for running Event loop.
 
 **Returns:**
@@ -252,23 +252,23 @@ Run the Event Loop with timeout.
          pass
 
       loop.run()
-   
+
    def wait_for_signal(self, wait_signal="", timeout=0):
       """
 Wait for a specific DBus signal to be received within a specified timeout period.
-      
+
 **Arguments:**
 
-* ``wait_signal``    
+* ``wait_signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal to wait for.
 
-* ``timeout``    
+* ``timeout``
 
   / *Condition*: optional / *Type*: int / *Default*: 0 /
-  
+
   The maximum time (in seconds) to wait for the signal.
 
 **Returns:**
@@ -276,7 +276,7 @@ Wait for a specific DBus signal to be received within a specified timeout period
 * ``payloads``
 
   / *Type*: str /
-  
+
   The signal payloads.
       """
       timeout = int(timeout)
@@ -291,7 +291,7 @@ Wait for a specific DBus signal to be received within a specified timeout period
       if wait_signal in self._captured_signal_dict:
          sgn.disconnect(callback_func)
          return self._captured_signal_dict[wait_signal]
-      
+
       self._run_event_loop_with_timeout(loop, timeout)
 
       if wait_signal in self._captured_signal_dict:
@@ -303,19 +303,19 @@ Wait for a specific DBus signal to be received within a specified timeout period
    def call_dbus_method(self, method_name, *args):
       """
 Call a DBus method with the specified method name and input arguments.
-      
-**Arguments:**   
 
-* ``method_name``    
+**Arguments:**
+
+* ``method_name``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus method to be called.
 
-* ``args``    
+* ``args``
 
   / *Condition*: optional / *Type*: tuple / *Default*: None /
-  
+
   Input arguments to be passed to the method.
 
 **Returns:**
@@ -323,7 +323,7 @@ Call a DBus method with the specified method name and input arguments.
 * ``mtd_ret``
 
   / *Type*: Any /
-  
+
   Return from called method.
       """
       try:
@@ -352,9 +352,9 @@ Constructor for DBusClientAgent.
 **Returns:**
 
 / *Type*: str /
-  
+
   The random and unique token.
-      """      
+      """
       return Utils().make_unique_token()
 
    def initialize_dbus_client(self, session, namespace, object_path):
@@ -367,28 +367,28 @@ clients are handled independently.
 
 The client session token is a unique identifier that can be used to associate the DBusClientExecutor with the specific client.
 This allows the DBusClientAgent to route incoming requests to the correct DBusClientExecutor based on the client session token.
-      
-**Arguments:**   
 
-* ``session``    
+**Arguments:**
+
+* ``session``
 
   / *Condition*: required / *Type*: str /
-  
+
   The client's session token.
 
-* ``namespace``    
+* ``namespace``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The namespace of the DBus service.
   This identifies the specific service or group of services.
   It is used to differentiate between different service instances.
   The namespace should be a string that uniquely identifies the service.
 
-* ``object_path``    
+* ``object_path``
 
   / *Condition*: optional / *Type*: str / *Default*: None /
-  
+
   The object path of the DBus service.
   This identifies the specific object within the service that the action will be performed on.
   The object path should be a string that follows the DBus object path naming convention.
@@ -397,12 +397,12 @@ This allows the DBusClientAgent to route incoming requests to the correct DBusCl
 **Returns:**
 
 (*no returns*)
-      """      
+      """
       if session in self._executor_dict:
          raise Exception("The session '%s' has alreday initialized." % session)
-      
+
       self._executor_dict[session] = DBusClientExecutor(namespace, object_path)
-   
+
    def connect(self, session):
       """
 Create a proxy object to DBus service.
@@ -436,19 +436,19 @@ Quit the DBus client.
    def get_monitoring_signal_payloads(self, session, signal):
       """
 Get the payloads of a specific signal.
-      
-**Arguments:**   
 
-* ``session``    
+**Arguments:**
+
+* ``session``
 
   / *Condition*: required / *Type*: str /
-  
+
   The client's session token.
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: required / *Type*: str /
-  
+
   The name of the DBus signal to get payloads.
 
 **Returns:**
@@ -456,7 +456,7 @@ Get the payloads of a specific signal.
 * ``payloads``
 
   / *Type*: str /
-  
+
   The signal's payloads.
       """
       return self._executor_dict[session].get_monitoring_signal_payloads(signal)
@@ -464,19 +464,19 @@ Get the payloads of a specific signal.
    def register_monitored_signal(self, session, signal):
       """
 Register a DBus signal or signals to be monitored for a specific connection.
-      
+
 **Arguments:**
 
-* ``session``    
+* ``session``
 
   / *Condition*: required / *Type*: str /
-  
+
   The client's session token.
 
-* ``signal``    
+* ``signal``
 
-  / *Condition*: required / *Type*: str / 
-  
+  / *Condition*: required / *Type*: str /
+
   The name of the DBus signal(s) to register. It can be a single signal name as a string,
   or multiple signal names joined by ','. For example: "signal1,signal2,signal3".
 
@@ -485,29 +485,29 @@ Register a DBus signal or signals to be monitored for a specific connection.
 (*no returns*)
       """
       self._executor_dict[session].register_monitored_signal(signal)
-   
+
    def wait_for_signal(self, session, wait_signal="", timeout=0):
       """
 Wait for a specific DBus signal to be received within a specified timeout period.
-      
+
 **Arguments:**
 
-* ``session``    
+* ``session``
 
   / *Condition*: required / *Type*: str /
-  
+
   The client's session token.
 
-* ``wait_signal``    
+* ``wait_signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal to wait for.
 
-* ``timeout``    
+* ``timeout``
 
   / *Condition*: optional / *Type*: int / *Default*: 0 /
-  
+
   The maximum time (in seconds) to wait for the signal.
 
 **Returns:**
@@ -515,7 +515,7 @@ Wait for a specific DBus signal to be received within a specified timeout period
 * ``payloads``
 
   / *Type*: str /
-  
+
   The signal payloads.
       """
       return self._executor_dict[session].wait_for_signal(wait_signal, timeout)
@@ -523,31 +523,31 @@ Wait for a specific DBus signal to be received within a specified timeout period
    def call_dbus_method(self, session, method_name, *args):
       """
 Call a DBus method with the specified method name and input arguments.
-      
-**Arguments:**   
 
-* ``session``    
+**Arguments:**
+
+* ``session``
 
   / *Condition*: required / *Type*: str /
-  
+
   The client's session token.
 
-* ``method_name``    
+* ``method_name``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus method to be called.
 
-* ``args``    
+* ``args``
 
   / *Condition*: optional / *Type*: tuple / *Default*: None /
-  
+
   Input arguments to be passed to the method.
 
 **Returns:**
 
   / *Type*: Any /
-  
+
   Return from called method.
       """
       return self._executor_dict[session].call_dbus_method(method_name, *args)
@@ -570,7 +570,7 @@ Description:
    Command-line Arguments:
 
       --host (str, optional): The host where the agent is running. Default is '0.0.0.0'.
-      
+
       --port (int, optional): The port where the agent is listening. Default is 2507.
    """
    # Create the argument parser

@@ -1,4 +1,4 @@
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -40,23 +40,23 @@ Constructor for ThreadSafeDict class.
       """
       super(ThreadSafeDict, self).__init__()
       self.__RLock=RLock()
-   
-   def __setitem__(self, key, item): 
+
+   def __setitem__(self, key, item):
       """
 Set the value for a given key.
 
 **Arguments:**
 
-* ``key``    
+* ``key``
 
   / *Condition*: required / *Type*: Any /
-  
+
   The key of dictionary.
 
-* ``item``    
+* ``item``
 
-  / *Condition*: required / *Type*: Any / 
-  
+  / *Condition*: required / *Type*: Any /
+
   The value of given key.
 
 **Returns:**
@@ -65,17 +65,17 @@ Set the value for a given key.
       """
       with self.__RLock:
          super(ThreadSafeDict, self).__setitem__(key, item)
-      
-   def __delitem__(self, key): 
+
+   def __delitem__(self, key):
       """
 Delete the value associated with a given key.
 
 **Arguments:**
 
-* ``key``    
+* ``key``
 
   / *Condition*: required / *Type*: Any /
-  
+
   The key of dictionary to be delteted.
 
 **Returns:**
@@ -83,9 +83,9 @@ Delete the value associated with a given key.
 (*no returns*)
       """
       with self.__RLock:
-         super(ThreadSafeDict, self).__delitem__(key)    
-       
-   def clear(self): 
+         super(ThreadSafeDict, self).__delitem__(key)
+
+   def clear(self):
       """
 Remove all key-value pairs from the dictionary.
 
@@ -94,18 +94,18 @@ Remove all key-value pairs from the dictionary.
 (*no returns*)
       """
       with self.__RLock:
-         super(ThreadSafeDict, self).clear()    
-        
-   def pop(self, key, *args): 
+         super(ThreadSafeDict, self).clear()
+
+   def pop(self, key, *args):
       """
 Remove and return the value associated with a given key.
 
 **Arguments:**
 
-* ``key``    
+* ``key``
 
   / *Condition*: required / *Type*: Any /
-  
+
   The key of dictionary to be pop.
 
 **Returns:**
@@ -113,13 +113,13 @@ Remove and return the value associated with a given key.
 * ``o``
 
   / *Type*: Any /
-  
+
   Value of the given key.
       """
       with self.__RLock:
          o=super(ThreadSafeDict, self).pop(key,*args)
-      return o        
-        
+      return o
+
    def popitem(self):
       """
 Remove and return an arbitrary key-value pair from the dictionary.
@@ -129,19 +129,19 @@ Remove and return an arbitrary key-value pair from the dictionary.
 (*no returns*)
       """
       with self.__RLock:
-         o=super(ThreadSafeDict, self).popitem()        
+         o=super(ThreadSafeDict, self).popitem()
       return o
-    
+
    def update(self, dict=None):
       """
 Update the dictionary with key-value pairs from another dictionary.
 
 **Arguments:**
 
-* ``dict``    
+* ``dict``
 
   / *Condition*: optional / *Type*: dict / *Default*: None /
-  
+
   Another dictionary-like object to update from.
 
 **Returns:**

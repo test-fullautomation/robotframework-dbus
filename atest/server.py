@@ -50,7 +50,7 @@ class HelloWorld(object):
     def YellowMessage(self, msg: Str):
         """Signal that a message has been received."""
         print("yellow")
-    
+
     def Hello(self, name: Str) -> Str:
         return "Hello {}!".format(name)
 

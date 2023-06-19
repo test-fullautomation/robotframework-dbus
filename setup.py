@@ -1,6 +1,6 @@
 # **************************************************************************************************************
 #
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ class ExtendedInstallCommand(install):
             install.run(self)
             if oRepositoryConfig.Get('PLATFORMSYSTEM') == "Linux":
                 from subprocess import call
-                call([  f"{os.path.dirname(oRepositoryConfig.Get('PYTHON'))}/pyinstaller" , 
+                call([  f"{os.path.dirname(oRepositoryConfig.Get('PYTHON'))}/pyinstaller" ,
                         '--onefile',
                         '--distpath',
                         f"{os.path.dirname(oRepositoryConfig.Get('PYTHON'))}",
