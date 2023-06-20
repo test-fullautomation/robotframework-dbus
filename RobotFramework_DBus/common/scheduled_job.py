@@ -1,4 +1,4 @@
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -37,30 +37,30 @@ A threaded job that executes a function at a specified interval.
       """
 Constructor for ScheduledJob class.
 
-**Arguments:**   
+**Arguments:**
 
-* ``interval``    
+* ``interval``
 
   / *Condition*: required / *Type*: datetime.timedelta /
-  
+
   The interval between function executions.
 
-* ``execute``    
+* ``execute``
 
   / *Condition*: required / *Type*: callable /
-  
+
   The function to execute.
 
-* ``args``    
+* ``args``
 
   / *Condition*: required / *Type*: tuple /
-  
+
   Variable-length positional arguments to pass to the function.
 
-* ``kwargs``    
+* ``kwargs``
 
   / *Condition*: required / *Type*: dict /
-  
+
   Keyword arguments to pass to the function.
 
 **Returns:**

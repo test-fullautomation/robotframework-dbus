@@ -1,4 +1,4 @@
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ if platform.system().lower().startswith("linux"):
    from dasbus.loop import EventLoop
 
 
-class DBusManager(Singleton):   
+class DBusManager(Singleton):
    """
 Class to manage all DBus connections.
    """
@@ -82,7 +82,7 @@ Destructor for ConnectionManager class.
    def quit(self):
       """
 Quit connection manager.
-      
+
 **Returns:**
 
 (*no returns*)
@@ -94,16 +94,16 @@ Quit connection manager.
    def add_connection(self, name, conn):
       """
 Add a connection to managed dictionary.
-      
-**Arguments:**   
 
-* ``name``   
+**Arguments:**
+
+* ``name``
 
   / *Condition*: required / *Type*: str /
 
   Connection's name.
-  
-* ``conn``   
+
+* ``conn``
 
   / *Condition*: required / *Type*: DBusClient /
 
@@ -119,10 +119,10 @@ Add a connection to managed dictionary.
    def remove_connection(self, connection_name):
       """
 Remove a connection by name.
-      
-**Arguments:**   
 
-* ``connection_name``   
+**Arguments:**
+
+* ``connection_name``
 
   / *Condition*: required / *Type*: str /
 
@@ -139,10 +139,10 @@ Remove a connection by name.
    def get_connection_by_name(self, connection_name):
       """
 Get an exist connection by name.
-      
-**Arguments:**   
 
-* ``connection_name``   
+**Arguments:**
+
+* ``connection_name``
 
   / *Condition*: required / *Type*: str /
 
@@ -153,7 +153,7 @@ Get an exist connection by name.
 * ``conn``
 
   / *Type*: socket.socket /
-  
+
   Connection object.
       """
       conn = None
@@ -165,10 +165,10 @@ Get an exist connection by name.
    def disconnect(self, connection_name):
       """
 Keyword for disconnecting a connection by name.
-      
-**Arguments:**   
 
-* ``connection_name``   
+**Arguments:**
+
+* ``connection_name``
 
   / *Condition*: required / *Type*: str /
 
@@ -188,56 +188,56 @@ Keyword for disconnecting a connection by name.
    def connect(self, conn_name='default_conn', namespace="", object_path=None, mode = "local", host="localhost", port=2507):
       """
 Keyword used to establish a DBus connection.
-      
-**Arguments:**   
 
-* ``conn_name``    
+**Arguments:**
+
+* ``conn_name``
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
   The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
 
-* ``namespace``    
+* ``namespace``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The namespace of the DBus service.
   This identifies the specific service or group of services.
   It is used to differentiate between different service instances.
   The namespace should be a string that uniquely identifies the service.
 
-* ``object_path``    
+* ``object_path``
 
   / *Condition*: optional / *Type*: str / *Default*: None /
-  
+
   The object path of the DBus service.
   This identifies the specific object within the service that the action will be performed on.
   The object path should be a string that follows the DBus object path naming convention.
   It typically consists of a hierarchical structure separated by slashes (/).
-  
-* ``mode``    
+
+* ``mode``
 
   / *Condition*: optional / *Type*: str / *Default*: 'local' /
-  
+
   The mode of testing the DBus service. Possible values are 'local' or 'remote'.
   'local' indicates testing on the current system, while 'remote' indicates testing on a remote system.
-  
-* ``host``    
+
+* ``host``
 
   / *Condition*: optional / *Type*: str / *Default*: 'localhost' /
-  
+
   The IP address or hostname of the remote system where the DBus agent is running.
-  
+
   This parameter is applicable only if `mode` is set to 'remote'.
-  
-* ``port``    
+
+* ``port``
 
   / *Condition*: optional / *Type*: int / *Default*: 2507 /
-  
+
   The port number on which the DBus agent is listening on the remote system.
-  
+
   This parameter is applicable only if `mode` is set to 'remote'.
 
 **Returns:**
@@ -272,30 +272,30 @@ Keyword used to establish a DBus connection.
          self.remove_connection(conn_name)
          # BuiltIn().log("Unable to create connection. Exception: %s" % ex, constants.LOG_LEVEL_ERROR)
          raise Exception(DBusManager.ERR_UNNABLE_CREATE_CONNECTION_STR % ex)
-   
+
    @keyword
    def set_signal_received_handler(self, conn_name="", signal="", handler=None):
       """
 Keyword used to set a signal received handler for a specific DBus connection and signal.
-      
-**Arguments:**   
 
-* ``conn_name``    
+**Arguments:**
+
+* ``conn_name``
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
   The name of the DBus connection.
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal to handle.
 
-* ``handler``    
+* ``handler``
 
   / *Condition*: optional / *Type*: str / *Default*: None /
-  
+
   The keyword to handle the received signal.
   The handler should accept the necessary parameters based on the signal being handled.
 
@@ -305,36 +305,36 @@ Keyword used to set a signal received handler for a specific DBus connection and
       """
       if conn_name not in self.connection_manage_dict.keys():
          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
-      
+
       connection_obj = self.connection_manage_dict[conn_name]
       try:
          connection_obj.set_signal_received_handler(signal, handler)
       except Exception as ex:
          raise Exception(DBusManager.ERR_SET_SIGNAL_HANDLER_STR % (handler, signal, ex))
-         
+
    @keyword
    def unset_signal_received_handler(self, conn_name="", signal="", handler=None):
       """
 Keyword used to set a signal received handler for a specific DBus connection and signal.
-      
-**Arguments:**   
 
-* ``conn_name``    
+**Arguments:**
+
+* ``conn_name``
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
   The name of the DBus connection.
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal to handle.
 
-* ``handler``    
+* ``handler``
 
   / *Condition*: optional / *Type*: str / *Default*: None /
-  
+
   The robotframework keyword which is handling the signal emitted event.
 
 **Returns:**
@@ -343,30 +343,30 @@ Keyword used to set a signal received handler for a specific DBus connection and
       """
       if conn_name not in self.connection_manage_dict.keys():
          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
-      
+
       connection_obj = self.connection_manage_dict[conn_name]
       try:
          connection_obj.unset_signal_received_handler(signal, handler)
       except Exception as ex:
          raise Exception(DBusManager.ERR_UNSET_SIGNAL_HANDLER_STR % (handler, signal, ex))
-   
+
    @keyword
    def register_signal(self, conn_name="default_conn", signal=""):
       """
 Keyword used to register a DBus signal or signals to be monitored for a specific connection.
-      
-**Arguments:**   
 
-* ``conn_name``    
+**Arguments:**
+
+* ``conn_name``
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
   The name of the DBus connection.
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal(s) to register. It can be a single signal name as a string,
   or multiple signal names joined by ','. For example: "signal1,signal2,signal3".
 
@@ -376,7 +376,7 @@ Keyword used to register a DBus signal or signals to be monitored for a specific
       """
       if conn_name not in self.connection_manage_dict.keys():
          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
-      
+
       connection_obj = self.connection_manage_dict[conn_name]
       try:
          connection_obj.register_monitored_signal(signal)
@@ -387,25 +387,25 @@ Keyword used to register a DBus signal or signals to be monitored for a specific
    def call_dbus_method(self, conn_name="default_conn", method_name="", *args):
       """
 Keyword used to call a DBus method with the specified method name and input arguments.
-      
-**Arguments:**   
 
-* ``conn_name``    
+**Arguments:**
+
+* ``conn_name``
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
   The name of the DBus connection.
 
-* ``method_name``    
+* ``method_name``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus method to be called.
 
-* ``args``    
+* ``args``
 
   / *Condition*: optional / *Type*: tuple / *Default*: None /
-  
+
   Input arguments to be passed to the method.
 
 **Returns:**
@@ -413,12 +413,12 @@ Keyword used to call a DBus method with the specified method name and input argu
 * ``ret_obj``
 
   / *Type*: Any /
-  
+
   Return from called method.
       """
       if conn_name not in self.connection_manage_dict.keys():
          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
-      
+
       ret_obj = None
       connection_obj = self.connection_manage_dict[conn_name]
       try:
@@ -432,36 +432,36 @@ Keyword used to call a DBus method with the specified method name and input argu
 #    def call_dbus_method_with_keyword_args(self, conn_name="default_conn", method_name="", **kwargs):
 #       """
 # Keyword used to call a DBus method with the specified method name and input keyword arguments.
-      
-# **Arguments:**   
 
-# * ``conn_name``    
+# **Arguments:**
+
+# * ``conn_name``
 
 #   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
 #   The name of the DBus connection.
 
-# * ``method_name``    
+# * ``method_name``
 
 #   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
 #   The name of the DBus method to be called.
 
-# * ``kwargs``    
+# * ``kwargs``
 
 #   / *Condition*: optional / *Type*: dict / *Default*: None /
-  
+
 #   Input keyword arguments to be passed to the method.
 
 # **Returns:**
 
 #   / *Type*: Any /
-  
+
 #   Return from called method.
 #       """
 #       if conn_name not in self.connection_manage_dict.keys():
 #          raise AssertionError("The '%s' connection  hasn't been established. Please connect first." % conn_name)
-      
+
 #       ret_obj = None
 #       connection_obj = self.connection_manage_dict[conn_name]
 #       try:
@@ -475,25 +475,25 @@ Keyword used to call a DBus method with the specified method name and input argu
    def wait_for_signal(self, conn_name="default_conn", signal="", timeout=0):
       """
 Keyword used to wait for a specific DBus signal to be received within a specified timeout period.
-      
-**Arguments:**   
 
-* ``conn_name``    
+**Arguments:**
+
+* ``conn_name``
 
   / *Condition*: optional / *Type*: str / *Default*: 'default_conn' /
-  
+
   The name of the DBus connection.
 
-* ``signal``    
+* ``signal``
 
   / *Condition*: optional / *Type*: str / *Default*: '' /
-  
+
   The name of the DBus signal to wait for.
 
-* ``timeout``    
+* ``timeout``
 
   / *Condition*: optional / *Type*: int / *Default*: 0 /
-  
+
   The maximum time (in seconds) to wait for the signal.
 
 **Returns:**
@@ -501,12 +501,12 @@ Keyword used to wait for a specific DBus signal to be received within a specifie
 * ``payloads``
 
   / *Type*: str /
-  
+
   The signal payloads.
       """
       if conn_name not in self.connection_manage_dict.keys():
          raise Exception("The '%s' connection  hasn't been established. Please connect first." % conn_name)
-      
+
       connection_obj = self.connection_manage_dict[conn_name]
       payloads = None
       try:

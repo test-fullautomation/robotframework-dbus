@@ -56,7 +56,7 @@ RobotFramework\_DBus Library support following keywords for testing connection i
 \textbf{conn\_name}: The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
-  
+
   Default is 'default\_conn'.
 
 \vspace{\baselineskip}
@@ -64,31 +64,31 @@ RobotFramework\_DBus Library support following keywords for testing connection i
 \textbf{namespace}: The namespace of the DBus service.
   This identifies the specific service or group of services.
   It is used to differentiate between different service instances.
-  The namespace should be a string that uniquely identifies the service. 
-  
+  The namespace should be a string that uniquely identifies the service.
+
   E.g. namespace=org.example.HelloWorld
-  
+
 \vspace{\baselineskip}
 
 \textbf{object\_path}: The object path of the DBus service.
   This identifies the specific object within the service that the action will be performed on.
   The object path should be a string that follows the DBus object path naming convention.
-  It typically consists of a hierarchical structure separated by slashes (/). 
-  
+  It typically consists of a hierarchical structure separated by slashes (/).
+
   E.g. object\_path=/org/example/HelloWorld
-  
+
 \vspace{\baselineskip}
 
 \textbf{mode}: The mode of testing the DBus service. Possible values are 'local' or 'remote'.
-  'local' indicates testing on the current system, while 'remote' indicates testing on a remote system. 
-  
+  'local' indicates testing on the current system, while 'remote' indicates testing on a remote system.
+
   Default is 'local'.
 
 \vspace{\baselineskip}
-  
+
 \textbf{host}: The IP address or hostname of the remote system where the DBus agent is running.
                  This parameter is applicable only if `mode` is set to 'remote'.
-                 
+
 				 Default is 'localhost'.
 \end{quote}
 \end{quote}
@@ -133,9 +133,9 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{conn\_name}: The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
-  
+
   Default is 'default\_conn'.
-  
+
 \vspace{\baselineskip}
 
 \textbf{signal}: The name of the DBus signal to be set emitted handler.
@@ -165,9 +165,9 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{conn\_name}: The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
-  
+
   Default is 'default\_conn'.
-  
+
 \vspace{\baselineskip}
 
 \textbf{signal}: The name of the DBus signal to be unset emitted handler.
@@ -195,9 +195,9 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{conn\_name}: The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
-  
+
   Default is 'default\_conn'.
-  
+
 \vspace{\baselineskip}
 
 \textbf{signal}: The name of the DBus signal(s) to register. It can be a single signal name as a string,
@@ -223,9 +223,9 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{conn\_name}: The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
-  
+
   Default is 'default\_conn'.
-  
+
 \vspace{\baselineskip}
 
 \textbf{method\_name}: The name of the DBus method to be called.
@@ -261,9 +261,9 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{conn\_name}: The name or identifier of the connection instance used to interact with the DBus service.
   This parameter is optional and can be used to uniquely identify a specific connection
   when multiple connections are established. If not provided, a default connection will be used.
-  
+
   Default is 'default\_conn'.
-  
+
 \vspace{\baselineskip}
 
 \textbf{signal}: The name of the DBus signal to wait for.
@@ -289,9 +289,9 @@ For remote testing, follow these steps:
 
 \begin{enumerate}
     \item Start the DBus Agent on the remote system by the following command:
-	
+
 		\textbf{dbus\_client\_agent} [-h] [--host HOST] [--port PORT]
-		
+
 		The DBus Client Agent supports the following command-line arguments:
 
 		\begin{itemize}
@@ -300,7 +300,7 @@ For remote testing, follow these steps:
 			\item [\texttt{--port} (int, optional)] The port where the agent is listening. Default is 2507.
 		\end{itemize}
 
-	
+
     \item On the host test PC, using the \texttt{connect} keyword with the \texttt{remote} mode and specify the correct host using the \texttt{host} parameter.
     \item Use the other keywords in the same way as local testing.
 \end{enumerate}
@@ -315,64 +315,64 @@ Kindly be advised that all the examples presented within this session are design
 \hypertarget{description-example1}{%
 \subsection{\texorpdfstring{\textbf{Example 1 - Waiting for DBus Signals with Synchronizatio}}{Example 1 - Waiting for DBus Signals with Synchronizatio}}\label{description-example1}}
 
-\textbf{Scenario 1:}In this example, I will use the 'wait for signal' keyword from the RobotFramework\_DBus library to wait for a DBus signal to be emitted using the synchronized mechanism. 
+\textbf{Scenario 1:}In this example, I will use the 'wait for signal' keyword from the RobotFramework\_DBus library to wait for a DBus signal to be emitted using the synchronized mechanism.
 This means that the keyword following 'wait for signal' will only be executed after the signal is emitted, and the 'wait for signal' keyword will return a value.
 
 
 \begin{robotcode}
 *** Settings ***
 Library    RobotFramework_DBus.DBusManager
- 
+
 *** Test Cases ***
 Hello World
-   connect    conn_name=test_dbus    
+   connect    conn_name=test_dbus
    ...        namespace=org.example.HelloWorld
    ...        mode=local
 
    ${ret}=    Wait For Signal     conn_name=test_dbus
-   ...                            signal=YellowMessage    
-   ...                            timeout=10  
-   
+   ...                            signal=YellowMessage
+   ...                            timeout=10
+
    Log To Console    ${ret}
-   
+
    Disconnect    test_dbus
 \end{robotcode}
 
 \textbf{Explanation:}
-In the aforementioned example, we establish a connection to the DBus service \textbf{org.example.HelloWorld} using the \textbf{'connect'} keyword and name this connection '\textbf{test\_dbus}'. 
-Subsequently, the \textbf{'Wait for signal'} keyword will wait for the DBus service to emit the \textbf{YellowMessage} signal within a 10-second timeframe and return the payloads of this signal 
+In the aforementioned example, we establish a connection to the DBus service \textbf{org.example.HelloWorld} using the \textbf{'connect'} keyword and name this connection '\textbf{test\_dbus}'.
+Subsequently, the \textbf{'Wait for signal'} keyword will wait for the DBus service to emit the \textbf{YellowMessage} signal within a 10-second timeframe and return the payloads of this signal
 immediately upon its emission within the specified timeframe (failing if the timeout is exceeded). The content of the payloads will be printed to the console.
 
 \hypertarget{description-example2}{%
 \subsection{\texorpdfstring{\textbf{Example 2 - Handling Multiple DBus Signals: Ensuring Signal Monitoring with the 'Register Signal' Keyword}}{Example 2 - Handling Multiple DBus Signals: Ensuring Signal Monitoring with the 'Register Signal' Keyword}}\label{description-example2}}
 
 \textbf{Scenario 2:}
-In Example 1, if we include an additional \textbf{Wait for signal} keyword to wait for the \textbf{GreenMessage} signal to be emitted after waiting for \textbf{YellowMessage}, 
-there is a possibility of missing the occurrence of \textbf{GreenMessage} if it is emitted before \textbf{YellowMessage}. In such a scenario, we can utilize the \textbf{Register Signal} 
-keyword to register \textbf{GreenMessage} in the watchlist. This ensures continuous monitoring of the signal starting immediately after executing this keyword and prevents the occurrence 
+In Example 1, if we include an additional \textbf{Wait for signal} keyword to wait for the \textbf{GreenMessage} signal to be emitted after waiting for \textbf{YellowMessage},
+there is a possibility of missing the occurrence of \textbf{GreenMessage} if it is emitted before \textbf{YellowMessage}. In such a scenario, we can utilize the \textbf{Register Signal}
+keyword to register \textbf{GreenMessage} in the watchlist. This ensures continuous monitoring of the signal starting immediately after executing this keyword and prevents the occurrence
 of missing the emitted \textbf{GreenMessage} event.
 
 
 \begin{robotcode}
 *** Settings ***
 Library    RobotFramework_DBus.DBusManager
- 
+
 *** Test Cases ***
 Hello World
-   connect    conn_name=test_dbus    
+   connect    conn_name=test_dbus
    ...        namespace=org.example.HelloWorld
    ...        mode=local
 
    Register Signal    conn_name=test_dbus    signal=GreenMessage
 
    ${ret}=    Wait For Signal     conn_name=test_dbus
-   ...                            signal=YellowMessage    
-   ...                            timeout=10  
+   ...                            signal=YellowMessage
+   ...                            timeout=10
    Log To Console    ${ret}
 
    ${ret}=    Wait For Signal     conn_name=test_dbus
-   ...                            signal=GreenMessage    
-   ...                            timeout=10  
+   ...                            signal=GreenMessage
+   ...                            timeout=10
    Log To Console    ${ret}
 
    ${ret}=    Call Dbus Method    test_dbus    Hello    World
@@ -381,8 +381,8 @@ Hello World
 
 \textbf{Explanation:}
 
-In the above example, by using the \textbf{Register Signal} keyword, we have registered the \textbf{GreenMessage} signal in the watchlist. If the \textbf{GreenMessage} event is emitted 
-during the \textbf{Wait for signal YellowMessage} timeframe, it will be recorded. Then, when we execute the \textbf{Wait for signal GreenMessage} keyword, it will immediately return 
+In the above example, by using the \textbf{Register Signal} keyword, we have registered the \textbf{GreenMessage} signal in the watchlist. If the \textbf{GreenMessage} event is emitted
+during the \textbf{Wait for signal YellowMessage} timeframe, it will be recorded. Then, when we execute the \textbf{Wait for signal GreenMessage} keyword, it will immediately return
 because the \textbf{GreenMessage} event has already occurred.
 
 
@@ -390,8 +390,8 @@ because the \textbf{GreenMessage} event has already occurred.
 \subsection{\texorpdfstring{\textbf{Example 3 - Handling DBus Signals: Non-blocking Signal Handling with the 'Set Signal Received Handler' Keyword}}{Example 3 - Handling DBus Signals: Non-blocking Signal Handling with the 'Set Signal Received Handler' Keyword}}\label{description-example3}}
 
 \textbf{Scenario 3:}
-In the two examples above, the testcase is blocked at the \textbf{Wait for Signal} keyword until the signal event is emitted. In the next example, we will explore the usage of 
-the \textbf{Set Signal Received Handler} keyword. This is a non-blocking keyword that allows us to register a user-defined keyword, such as a callback function. The registered 
+In the two examples above, the testcase is blocked at the \textbf{Wait for Signal} keyword until the signal event is emitted. In the next example, we will explore the usage of
+the \textbf{Set Signal Received Handler} keyword. This is a non-blocking keyword that allows us to register a user-defined keyword, such as a callback function. The registered
 keyword will be called when the emitted signal event occurs. The testcase will continue with the next keyword immediately after the \textbf{Set Signal Received Handler} keyword, without waiting.
 
 
@@ -399,21 +399,21 @@ keyword will be called when the emitted signal event occurs. The testcase will c
 *** Settings ***
 Library    RobotFramework_DBus.DBusManager
 Library    test/dbus/client.py
- 
+
 *** Test Cases ***
 Hello World
-   connect    conn_name=test_dbus    
+   connect    conn_name=test_dbus
    ...        namespace=org.example.HelloWorld
    ...        mode=local
 
-   Set Signal Received Handler    conn_name=test_dbus    
-   ...                            signal=RedMessage    
+   Set Signal Received Handler    conn_name=test_dbus
+   ...                            signal=RedMessage
    ...                            handler=On Received Red Signal
-   
+
    Log To Console    The test is continuing...
 
    Sleep    10s
-   
+
    Disconnect    test_dbus
 
 *** Keyword ***
@@ -425,9 +425,9 @@ On Received Red Signal
 
 \textbf{Explanation:}
 
-In the above example, by using the \textbf{Set Signal Received Handler} keyword, we have registered the user-defined keyword \textbf{On Received Red Signal} as a callback function. 
-When the \textbf{RedMessage} is emitted, this keyword will be executed. During the time when the \textbf{RedMessage} has not been emitted yet, the testcase will continue running the 
-subsequent keywords as usual. It is important to note that the user-defined keyword should have an argument to handle the payload of the signal. If there is no longer a need to invoke 
+In the above example, by using the \textbf{Set Signal Received Handler} keyword, we have registered the user-defined keyword \textbf{On Received Red Signal} as a callback function.
+When the \textbf{RedMessage} is emitted, this keyword will be executed. During the time when the \textbf{RedMessage} has not been emitted yet, the testcase will continue running the
+subsequent keywords as usual. It is important to note that the user-defined keyword should have an argument to handle the payload of the signal. If there is no longer a need to invoke
 the callback function, we should unregister the signal handler using the \textbf{Unset Signal Received Handler} keyword.
 
 
@@ -444,16 +444,16 @@ In the next example, we will explore how to use the \textbf{Call Dbus Method} ke
 *** Settings ***
 Library    RobotFramework_DBus.DBusManager
 Library    test/dbus/client.py
- 
+
 *** Test Cases ***
 Hello World
-   connect    conn_name=test_dbus    
+   connect    conn_name=test_dbus
    ...        namespace=org.example.HelloWorld
    ...        mode=local
 
    ${ret}=    Call Dbus Method    test_dbus    Hello    World
    Log To Console    ${ret}
-   
+
    Disconnect    test_dbus
 \end{robotcode}
 
@@ -470,7 +470,7 @@ To write numbered steps in LaTeX, you can use the "enumerate" environment. Here'
 \item On the System Under Test (SUT), run the following command:
 
 	\textbf{dbus\_client\_agent}  0.0.0.0  2507
-		
+
 		The DBus Client Agent supports the following command-line arguments:
 
 		\begin{itemize}
@@ -486,7 +486,7 @@ To write numbered steps in LaTeX, you can use the "enumerate" environment. Here'
 *** Settings ***
 Library    RobotFramework_DBus.DBusManager
 Library    test/dbus/client.py
- 
+
 *** Test Cases ***
 Hello World
    connect    conn_name=test_dbus
@@ -495,14 +495,14 @@ Hello World
    ...        host=172.17.0.2
    ...        port=2507
 
-   Set Signal Received Handler    conn_name=test_dbus    
-   ...                            signal=RedMessage    
+   Set Signal Received Handler    conn_name=test_dbus
+   ...                            signal=RedMessage
    ...                            handler=On Received Red Signal
-   
+
    Log To Console    The test is continuing...
 
    Sleep    10s
-   
+
    Disconnect    test_dbus
 
 *** Keyword ***
@@ -514,8 +514,8 @@ On Received Red Signal
 
 \textbf{Explanation:}
 
-In the above example, we set the value of the \texttt{mode} parameter for the \texttt{connect} keyword to \texttt{remote}, and add two parameters: \texttt{host} 
-and \texttt{port}. The \texttt{host} parameter is set to the IP address of the System Under Test (SUT), which is 172.17.0.2, and the \texttt{port} parameter is set 
+In the above example, we set the value of the \texttt{mode} parameter for the \texttt{connect} keyword to \texttt{remote}, and add two parameters: \texttt{host}
+and \texttt{port}. The \texttt{host} parameter is set to the IP address of the System Under Test (SUT), which is 172.17.0.2, and the \texttt{port} parameter is set
 to 2507, which is the port that the agent is listening on.
 
 

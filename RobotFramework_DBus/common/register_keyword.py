@@ -1,4 +1,4 @@
-#  Copyright 2020-2022 Robert Bosch GmbH
+#  Copyright 2020-2023 Robert Bosch GmbH
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -39,12 +39,12 @@ A class that provides a keyword as a callback function for a DBus signal receive
       """
 Constructor for RegisterKeyword class.
 
-**Arguments:**   
+**Arguments:**
 
-* ``kw``    
+* ``kw``
 
   / *Condition*: required / *Type*: str /
-  
+
   Keyword name to be set as the callback function.
 
 **Returns:**
@@ -60,7 +60,7 @@ Get the handle keyword name.
 **Returns:**
 
   / *Type*: str /
-  
+
   The handle keyword name.
       """
       return self._kw
@@ -69,12 +69,12 @@ Get the handle keyword name.
       """
 Constructor for RegisterKeyword class.
 
-**Arguments:**   
+**Arguments:**
 
-* ``observer``    
+* ``observer``
 
   / *Condition*: optional / *Type*: tuple / *Default*: None /
-  
+
   Input arguments to be passed to the callback method.
 
 **Returns:**
