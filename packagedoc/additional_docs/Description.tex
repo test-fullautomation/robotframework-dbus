@@ -2,7 +2,6 @@
 % Generated at 10.03.2023 - 16:20:16 by RobotFramework_DBus
 %
 
-\emph{RobotFramework\_DBus}
 
 \hypertarget{prerequisites}{%
 \section{Prerequisites}\label{prerequisites}}
@@ -12,7 +11,7 @@ Before using \textbf{RobotFramework\_DBus}, make sure you have the following lib
 \begin{itemize}
   \item \textbf{pycairo}: This library provides Python bindings for the Cairo graphics library. It is used for rendering graphics and creating visual elements in your applications.
   \item \textbf{PyGObject}: PyGObject is a Python package that provides bindings for the GObject library. It allows you to use GObject-based libraries, such as GTK+, in Python applications.
-  \item \textbf{dasbus}: \textbf{RobotFramework\_DBus} is built upon the \textit{dasbus} library, which is a Pythonic D-Bus library. Make sure you have \textit{dasbus} installed before using \textbf{Your Library Name}.
+  \item \textbf{dasbus}: \textbf{RobotFramework\_DBus} is built upon the \textit{dasbus} library, which is a Pythonic D-Bus library. Make sure you have \textit{dasbus} installed before using \textbf{RobotFramework\_DBus}.
   \item \textbf{pyinstaller}: PyInstaller is a tool used to package Python applications into standalone executables. If you plan to distribute your application as an executable, you will need to have \textit{pyinstaller} installed.
 \end{itemize}
 
@@ -28,9 +27,9 @@ sourcecode from the GitHub.
 After checking out the source completely, you can install by running
 below command inside \textbf{robotframework-dbus} directory.
 
-\begin{verbatim}
+\begin{robotlog}
 python setup.py install
-\end{verbatim}
+\end{robotlog}
 
 \hypertarget{usage}{%
 \section{Usage}\label{description-usage}}
@@ -45,10 +44,14 @@ RobotFramework\_DBus Library support following keywords for testing connection i
 
 \textbf{Syntax}:
 
-\begin{quote}
-\textbf{connect}
-\texttt{conn\_name={[}conn\_name{]}\ \ \ namespace={[}namespace{]}\ \ \ object\_path={[}object path{]}\ \ \ mode={[}test mode{]}\ \ \ host={[}remote host{]}\ \ \ port={[}remote port{]}}
-\end{quote}
+\begin{robotcode}
+connect		conn_name=[connection name] 
+...    		namespace=[namespace] 
+...    		object_path=[object path] 
+...    		mode=[test mode] 
+...    		host=[remote host] 
+...    		port=[remote port]
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -101,9 +104,9 @@ RobotFramework\_DBus Library support following keywords for testing connection i
 
 \textbf{Syntax}:
 
-\begin{quote}
-\textbf{disconnect} \texttt{conn\_name}
-\end{quote}
+\begin{robotcode}
+disconnect 		conn_name
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -122,10 +125,11 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 
 \textbf{Syntax}:
 
-\begin{quote}
-\textbf{set signal received handler}
-\texttt{conn\_name={[}conn\_name{]}\ \ \ signal={[}signal name{]}\ \ \ handler={[}keyword to handle signal emitted event{]}}
-\end{quote}
+\begin{robotcode}
+set signal received handler	conn name=[conn name] 
+...                        	signal=[signal name]
+...                        	handler=[keyword handles signal emitted event]
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -154,10 +158,11 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{Use to unset a signal received handler for a specific signal.}
 
 \textbf{Syntax}:
-\begin{quote}
-\textbf{unset signal received handler}
-\texttt{conn\_name={[}conn\_name{]}\ \ \ signal={[}signal name{]}\ \ \ handler={[}keyword to handle signal emitted event{]}}
-\end{quote}
+\begin{robotcode}
+unset signal received handler 	conn name=[conn name] 
+...                           	signal=[signal name]
+...                           	handler=[keyword handles signal emitted event]
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -184,10 +189,10 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{Use to register a DBus signal or signals to be monitored for a specific connection.}
 
 \textbf{Syntax}:
-\begin{quote}
-\textbf{register signal}
-\texttt{conn\_name={[}conn\_name{]}\ \ \ signal={[}signal name{]}}
-\end{quote}
+\begin{robotcode}
+register signal 	conn name=[conn name] 
+...             	signal=[signal name]
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -212,10 +217,9 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{Use to call a DBus method with the specified method name and input arguments.}
 
 \textbf{Syntax}:
-\begin{quote}
-\textbf{call dbus method}
-\texttt{{[}conn\_name{]}\ \ \ {[}method\_name{]}\ \ \ {[}args{]}}
-\end{quote}
+\begin{robotcode}
+call dbus method 	[conn name] 	[method name] 	[args]
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -250,10 +254,11 @@ to disconnect. If the connection name is 'ALL', all connections will be disconne
 \textbf{Use to wait for a specific DBus signal to be received within a specified timeout period.}
 
 \textbf{Syntax}:
-\begin{quote}
-\textbf{wait for signal}
-\texttt{conn\_name={[}conn\_name{]}\ \ \ signal={[}signal name{]}\ \ \ timeout={[}timeout{]}}
-\end{quote}
+\begin{robotcode}
+wait for signal 	conn name=[conn name] 
+...             	signal=[signal name] 
+...             	timeout=[timeout]
+\end{robotcode}
 
 \textbf{Arguments}:
 
@@ -312,11 +317,13 @@ For remote testing, follow these steps:
 
 Kindly be advised that all the examples presented within this session are designed to interact with the DBus service sample server.py residing in the atest/ directory.
 
+\newpage
 \hypertarget{description-example1}{%
-\subsection{\texorpdfstring{\textbf{Example 1 - Waiting for DBus Signals with Synchronizatio}}{Example 1 - Waiting for DBus Signals with Synchronizatio}}\label{description-example1}}
+\subsection{\texorpdfstring{\textbf{Example 1 - Synchronized DBus Signal Waiting}}{Example 1 - Synchronized DBus Signal Waiting}}\label{description-example1}}
 
-\textbf{Scenario 1:}In this example, I will use the 'wait for signal' keyword from the RobotFramework\_DBus library to wait for a DBus signal to be emitted using the synchronized mechanism.
-This means that the keyword following 'wait for signal' will only be executed after the signal is emitted, and the 'wait for signal' keyword will return a value.
+\textbf{Scenario:} 
+In this example, I will use the \rcode{wait for signal} keyword from the RobotFramework\_DBus library to wait for a DBus signal to be emitted using the synchronized mechanism.
+This means that the keyword following \rcode{wait for signal} will only be executed after the signal is emitted, and the \rcode{wait for signal} keyword will return a value.
 
 
 \begin{robotcode}
@@ -339,16 +346,16 @@ Hello World
 \end{robotcode}
 
 \textbf{Explanation:}
-In the aforementioned example, we establish a connection to the DBus service \textbf{org.example.HelloWorld} using the \textbf{'connect'} keyword and name this connection '\textbf{test\_dbus}'.
+In the aforementioned example, we establish a connection to the DBus service \rcode{org.example.HelloWorld} using the \rcode{'connect'} keyword and name this connection '\textbf{test\_dbus}'.
 Subsequently, the \textbf{'Wait for signal'} keyword will wait for the DBus service to emit the \textbf{YellowMessage} signal within a 10-second timeframe and return the payloads of this signal
 immediately upon its emission within the specified timeframe (failing if the timeout is exceeded). The content of the payloads will be printed to the console.
 
 \hypertarget{description-example2}{%
-\subsection{\texorpdfstring{\textbf{Example 2 - Handling Multiple DBus Signals: Ensuring Signal Monitoring with the 'Register Signal' Keyword}}{Example 2 - Handling Multiple DBus Signals: Ensuring Signal Monitoring with the 'Register Signal' Keyword}}\label{description-example2}}
+\subsection{\texorpdfstring{\textbf{Example 2 - Managing Multiple DBus Signals with 'Register Signal' Keyword}}{Example 2 - Managing Multiple DBus Signals with 'Register Signal' Keyword}}\label{description-example2}}
 
-\textbf{Scenario 2:}
-In Example 1, if we include an additional \textbf{Wait for signal} keyword to wait for the \textbf{GreenMessage} signal to be emitted after waiting for \textbf{YellowMessage},
-there is a possibility of missing the occurrence of \textbf{GreenMessage} if it is emitted before \textbf{YellowMessage}. In such a scenario, we can utilize the \textbf{Register Signal}
+\textbf{Scenario:}
+In Example 1, if we include an additional \rcode{Wait for signal} keyword to wait for the \textbf{GreenMessage} signal to be emitted after waiting for \textbf{YellowMessage},
+there is a possibility of missing the occurrence of \textbf{GreenMessage} if it is emitted before \textbf{YellowMessage}. In such a scenario, we can utilize the \rcode{Register Signal}
 keyword to register \textbf{GreenMessage} in the watchlist. This ensures continuous monitoring of the signal starting immediately after executing this keyword and prevents the occurrence
 of missing the emitted \textbf{GreenMessage} event.
 
@@ -382,17 +389,17 @@ Hello World
 \textbf{Explanation:}
 
 In the above example, by using the \textbf{Register Signal} keyword, we have registered the \textbf{GreenMessage} signal in the watchlist. If the \textbf{GreenMessage} event is emitted
-during the \textbf{Wait for signal YellowMessage} timeframe, it will be recorded. Then, when we execute the \textbf{Wait for signal GreenMessage} keyword, it will immediately return
+during the \textbf{Wait for signal YellowMessage} timeframe, it will be recorded. Then, when we execute the \rcode{Wait for signal} keyword for \textbf{GreenMessage}, it will immediately return
 because the \textbf{GreenMessage} event has already occurred.
 
 
 \hypertarget{description-example3}{%
-\subsection{\texorpdfstring{\textbf{Example 3 - Handling DBus Signals: Non-blocking Signal Handling with the 'Set Signal Received Handler' Keyword}}{Example 3 - Handling DBus Signals: Non-blocking Signal Handling with the 'Set Signal Received Handler' Keyword}}\label{description-example3}}
+\subsection{\texorpdfstring{\textbf{Example 3 - Non-blocking DBus Signal Handling with 'Set Signal Received Handler'}}{Example 3 - Non-blocking DBus Signal Handling with 'Set Signal Received Handler'}}\label{description-example3}}
 
-\textbf{Scenario 3:}
-In the two examples above, the testcase is blocked at the \textbf{Wait for Signal} keyword until the signal event is emitted. In the next example, we will explore the usage of
-the \textbf{Set Signal Received Handler} keyword. This is a non-blocking keyword that allows us to register a user-defined keyword, such as a callback function. The registered
-keyword will be called when the emitted signal event occurs. The testcase will continue with the next keyword immediately after the \textbf{Set Signal Received Handler} keyword, without waiting.
+\textbf{Scenario:}
+In the two examples above, the testcase is blocked at the \rcode{Wait for Signal} keyword until the signal event is emitted. In the next example, we will explore the usage of
+the \rcode{Set Signal Received Handler} keyword. This is a non-blocking keyword that allows us to register a user-defined keyword, such as a callback function. The registered
+keyword will be called when the emitted signal event occurs. The testcase will continue with the next keyword immediately after the \rcode{Set Signal Received Handler} keyword, without waiting.
 
 
 \begin{robotcode}
@@ -425,19 +432,19 @@ On Received Red Signal
 
 \textbf{Explanation:}
 
-In the above example, by using the \textbf{Set Signal Received Handler} keyword, we have registered the user-defined keyword \textbf{On Received Red Signal} as a callback function.
+In the above example, by using the \rcode{Set Signal Received Handler} keyword, we have registered the user-defined keyword \rcode{On Received Red Signal} as a callback function.
 When the \textbf{RedMessage} is emitted, this keyword will be executed. During the time when the \textbf{RedMessage} has not been emitted yet, the testcase will continue running the
 subsequent keywords as usual. It is important to note that the user-defined keyword should have an argument to handle the payload of the signal. If there is no longer a need to invoke
-the callback function, we should unregister the signal handler using the \textbf{Unset Signal Received Handler} keyword.
+the callback function, we should unregister the signal handler using the \rcode{Unset Signal Received Handler} keyword.
 
 
-
+\newpage
 \hypertarget{description-example4}{%
-\subsection{\texorpdfstring{\textbf{Example 4 - Invoking DBus Methods: Using the 'Call Dbus Method' Keyword for Method Invocation and Return Value Retrieval}}{Example 4 - Invoking DBus Methods: Using the 'Call Dbus Method' Keyword for Method Invocation and Return Value Retrieval}}\label{description-example4}}
+\subsection{\texorpdfstring{\textbf{Example 4 - Invoking DBus Methods: Using 'Call Dbus Method' Keyword}}{Example 4 - Invoking DBus Methods: Using 'Call Dbus Method' Keyword}}\label{description-example4}}
 
-\textbf{Scenario 4:}
+\textbf{Scenario:}
 
-In the next example, we will explore how to use the \textbf{Call Dbus Method} keyword to invoke a method in the DBus service and retrieve the return value from this method.
+In the next example, we will explore how to use the \rcode{Call Dbus Method} keyword to invoke a method in the DBus service and retrieve the return value from this method.
 
 
 \begin{robotcode}
@@ -459,12 +466,10 @@ Hello World
 
 
 \hypertarget{description-example5}{%
-\subsection{\texorpdfstring{\textbf{Example 5 - Testing a DBus Service on a Remote System: Configuring Test Environment and Steps}}{Example 5 - Testing a DBus Service on a Remote System: Configuring Test Environment and Steps}}\label{description-example5}}
+\subsection{\texorpdfstring{\textbf{Example 5 - Testing a Remote DBus Service: Setup and Steps}}{Example 5 - Testing a Remote DBus Service: Setup and Steps}}\label{description-example5}}
 
-\textbf{Scenario 5:}
+\textbf{Scenario:}
 In the next example, we will explore how to test a DBus service on a different PC. To be able to test on a remote system, we need to perform two steps:
-
-To write numbered steps in LaTeX, you can use the "enumerate" environment. Here's an example of how to format steps 1 and 2:
 
 \begin{enumerate}
 \item On the System Under Test (SUT), run the following command:
