@@ -1,9 +1,9 @@
 {
    "REPOSITORYNAME" : "robotframework-dbus",
    "PACKAGENAME" : "RobotFramework_DBus",
-   "AUTHOR" : "TODO",
-   "AUTHOREMAIL" : "TODO",
-   "DESCRIPTION" : "TODO",
+   "AUTHOR" : "Nguyen Huynh Tri Cuong",
+   "AUTHOREMAIL" : "cuong.nguyenhuynhtri@vn.bosch.com",
+   "DESCRIPTION" : "Robot Framework QConnect library extension for dbus testing",
    "LONGDESCRIPTIONCONTENTTYPE" : "text/markdown",
    "URL" : "https://github.com/test-fullautomation/robotframework-dbus",
    "PROGRAMMINGLANGUAGE" : "Programming Language :: Python :: 3",
