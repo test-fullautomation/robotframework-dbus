@@ -32,6 +32,7 @@ from robot.api.deco import keyword
 from RobotFramework_DBus.dbus_client import DBusClient
 from RobotFramework_DBus.dbus_client_remote import DBusClientRemote
 from RobotFramework_DBus.common.utils import Singleton
+from RobotFramework_DBus.version import VERSION
 import threading
 import platform
 if platform.system().lower().startswith("linux"):
@@ -48,6 +49,7 @@ Class to manage all DBus connections.
    """
    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
    ROBOT_AUTO_KEYWORDS = False
+   ROBOT_LIBRARY_VERSION = VERSION
 
    ERR_CONNECTION_NAME_EXIST_STR = "The connection name '%s' has already existed! Please use other name"
    ERR_UNNABLE_CREATE_CONNECTION_STR = "Unable to create connection. Exception: %s"
