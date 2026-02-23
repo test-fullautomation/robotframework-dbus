@@ -1,4 +1,4 @@
-.. Copyright 2020-2023 Robert Bosch GmbH
+.. Copyright 2020-2026 Robert Bosch GmbH
 
 .. Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,13 +15,11 @@
 Package Description
 ===================
 
-The **RobotFramework_DBus** description will be available soon.
+**RobotFramework_DBus** is a Robot Framework keyword library designed to support the
+automated testing of **DBus** services using both synchronous and asynchronous mechanisms.
 
 How to install
 --------------
-
-Installer will be available soon.
-
 
 The **RobotFramework_DBus** can be installed in two different ways.
 
@@ -29,13 +27,13 @@ The **RobotFramework_DBus** can be installed in two different ways.
 
    .. code::
 
-      pip install RobotFramework_DBus
+      pip install robotframework-dbus
 
-   `RobotFramework_DBus in PyPi <https://pypi.org/project/RobotFramework_DBus/>`_
+   `RobotFramework_DBus in PyPi <https://pypi.org/project/robotframework-dbus/>`_
 
 2. Installation via GitHub (recommended for developers)
 
-   a. Clone the **robotframework-dbus** repository to your machine.
+   * Clone the **robotframework-dbus** repository to your machine.
 
       .. code::
 
@@ -43,21 +41,57 @@ The **RobotFramework_DBus** can be installed in two different ways.
 
       `RobotFramework_DBus in GitHub <https://github.com/test-fullautomation/robotframework-dbus>`_
 
-   b. Install dependencies
+   * Use the following command to install **RobotFramework_DBus** (executed in repository main folder):
 
-      **RobotFramework_DBus** requires some additional Python libraries. Before you install the cloned repository sources
-      you have to install the dependencies manually. The names of all related packages you can find in the file ``requirements.txt``
-      in the repository root folder. Use pip to install them:
+     .. code::
 
-      .. code::
+        python -m pip install .
 
-         pip install -r requirements.txt
+     Or:
 
-   c. Use the following command to install the **RobotFramework_DBus**:
+     .. code::
 
-      .. code::
+        python -m pip install --proxy <proxy> .
 
-         setup.py install
+     This command will also download and install all dependencies that are required to work with the source files in the current repository.
+     After the initial installation of **RobotFramework_DBus** is done, you have the following two possibilities:
+
+     1. *Clean the previous installation*:
+
+        .. code::
+
+           python "./cleanup_installation.py"
+
+        ``cleanup_installation.py`` explicitly deletes all files and folders within the component installation folder under
+        ``site-packages`` and also deletes local build artefacts.
+
+     2. *Render the component documentation*:
+
+        .. code::
+
+           python "./genpackagedoc.py"
+
+        This would e.g. be required in case of changes in the interface of **RobotFramework_DBus**.
+
+        The documentation is rendered by a separate application called **GenPackageDoc**, that is part
+        of the build dependencies and runtime dependencies of **RobotFramework_DBus**.
+
+        **GenPackageDoc** needs to be configured. Details about how to do this, can be found in the
+        `README.rst <https://github.com/test-fullautomation/python-genpackagedoc/blob/develop/README.rst>`_
+        (sections *Install dependencies* and *Configure dependencies*).
+
+   * Use the following command to build **RobotFramework_DBus** (executed in repository main folder):
+
+     .. code::
+
+        python -m build .
+
+     Or:
+
+     .. code::
+
+        python -m pip config set global.proxy <proxy>
+        python -m build .
 
 
 Package Documentation
@@ -91,7 +125,7 @@ Contributors
 License
 -------
 
-Copyright 2020-2023 Robert Bosch GmbH
+Copyright 2020-2026 Robert Bosch GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
