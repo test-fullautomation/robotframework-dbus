@@ -1,0 +1,1 @@
+sudo apt-get install -y libcairo2-dev libxt-dev libgirepository1.0-dev libgirepository-2.0-dev
