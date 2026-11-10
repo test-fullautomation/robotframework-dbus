@@ -18,6 +18,6 @@
 #
 # Version and date of RobotFramework_DBus
 #
-VERSION      = "0.2.0"
-VERSION_DATE = "23.02.2026"
+VERSION      = "0.3.0"
+VERSION_DATE = "10.11.2026"
 

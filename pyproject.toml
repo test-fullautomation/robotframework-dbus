@@ -18,7 +18,7 @@
 #
 # TOML file used for component installation
 #
-# Version 0.1.0 / 23.02.2026
+# Version 0.2.0 / 10.11.2026
 #
 # --------------------------------------------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@
 requires      = ["setuptools>=80.9.0", "wheel", "build", "docutils>=0.22.4", "robotframework>=6.1",
                  "pycairo==1.28.0;platform_system=='Linux'",
                  "PyGObject==3.44.1;platform_system=='Linux'",
-                 "GenPackageDoc", "PythonExtensionsCollection"] # need to be strengthened later to: "GenPackageDoc>=0.43.0"
+                 "PythonExtensionsCollection"]
 build-backend = "build_backend"
 backend-path  = ["."] # the repository main folder
 
@@ -67,7 +67,6 @@ dependencies = [
     "dasbus==1.7;platform_system=='Linux'",
     "colorama",
 # TODO: is this required=   "pyinstaller",
-    "GenPackageDoc",
     "PythonExtensionsCollection"
 ]
 dynamic = ["version"]
